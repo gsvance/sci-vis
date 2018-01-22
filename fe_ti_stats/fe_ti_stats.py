@@ -9,7 +9,7 @@
 # Try to quantify the physical conditions corresponding to each of the peaks
 # Make histograms to reveal more about the physical conditions in the peaks
 
-# Last modified 7/20/17 by Greg Vance
+# Last modified 1/22/18 by Greg Vance
 
 # I seldom actually use Numpy on Saguaro, but it will be great for this
 import numpy as np
@@ -40,9 +40,9 @@ def main():
 	with open(CCO2_PLOTTING_FILE, "r") as data_file:
 		headers = data_file.readline().strip().split(", ")
 	# Find which columns of the file have the data we need
-	col_Fe = headers.index("A_{Fe}")
-	col_56Ni = headers.index("A_{56Ni}")
-	col_44Ti = headers.index("A_{44Ti}")
+	col_Fe = headers.index("X_{Fe}")
+	col_56Ni = headers.index("X_{56Ni}")
+	col_44Ti = headers.index("X_{44Ti}")
 	# Use Numpy's handy loadtxt function to read that data from file into arrays
 	data_Fe, data_56Ni, data_44Ti = np.loadtxt(CCO2_PLOTTING_FILE, delimiter=", ",
 		skiprows=1, usecols=(col_Fe, col_56Ni, col_44Ti), unpack=True)

@@ -49,7 +49,7 @@ for ii in range(200):
     axis('off')
    
     # save the image
-    savefig('supernova_den_%03d.png' %ii, bbox_inches='tight')
+    savefig('img/supernova_den_%03d.png' %ii, bbox_inches='tight')
 
 
 
