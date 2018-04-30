@@ -9,7 +9,7 @@
 # Try to quantify the physical conditions corresponding to each of the peaks
 # Make histograms to reveal more about the physical conditions in the peaks
 
-# Last modified 1/22/18 by Greg Vance
+# Last modified 4/30/18 by Greg Vance
 
 # I seldom actually use Numpy on Saguaro, but it will be great for this
 import numpy as np
@@ -18,9 +18,6 @@ import matplotlib.pyplot as plt
 
 # Giant CSV file containing all the per-particle data for the cco2 simulation
 CCO2_PLOTTING_FILE = "/home/gsvance/results/plotting/cco2_plotting.out"
-
-# Name of the output text file
-#OUTPUT_TEXT = "stats.out"
 
 # Names of the histogram output images
 HISTOGRAM_OUTPUT = "histogram.png"
@@ -142,9 +139,9 @@ def main():
 	print "\nMaking histograms of peak temperatures and densities..."
 	# Make a histogram with the peak temperatures of each peak superimposed
 	plt.figure("Peak Temp Histogram")
-	plt.hist(peak1_peak_temp/1e9, 120, (1, 4), histtype="step", edgecolor="blue",
+	plt.hist(peak1_peak_temp/1e9, 30, histtype="step", edgecolor="blue",
 		label="Peak 1 (mean Fe/Ti = %.1f)" % (np.mean(peak1_Fe_Ti)))
-	plt.hist(peak2_peak_temp/1e9, 120, (1, 4), histtype="step", edgecolor="green",
+	plt.hist(peak2_peak_temp/1e9, 30, histtype="step", edgecolor="green",
 		label="Peak 2 (mean Fe/Ti = %.1f)" % (np.mean(peak2_Fe_Ti)))
 	# Add labels to the histogram and save it out to file
 	plt.title("Peak Temperatures of Particles in Iron/Titanium Peaks")
@@ -154,13 +151,13 @@ def main():
 	plt.savefig(TEMP_HISTOGRAM_OUTPUT, dpi=100)
 	# Make another histogram with the peak densities of each peak superimposed
 	plt.figure("Peak Rho Histogram")
-	plt.hist(peak1_peak_rho/1e5, 120, (0, 5), histtype="step", edgecolor="blue",
+	plt.hist(peak1_peak_rho/1e6, 30, histtype="step", edgecolor="blue",
 		label="Peak 1 (mean Fe/Ti = %.1f)" % (np.mean(peak1_Fe_Ti)))
-	plt.hist(peak2_peak_rho/1e5, 120, (0, 5), histtype="step", edgecolor="green",
+	plt.hist(peak2_peak_rho/1e6, 30, histtype="step", edgecolor="green",
 		label="Peak 2 (mean Fe/Ti = %.1f)" % (np.mean(peak2_Fe_Ti)))
 	# Add labels to this histogram and save it out to file too
 	plt.title("Peak Densities of Particles in Iron/Titanium Peaks")
-	plt.xlabel("Density at Time of Peak Temperature (10$^5$ g/cm$^3$)")
+	plt.xlabel("Density at Time of Peak Temperature (10$^6$ g/cm$^3$)")
 	plt.ylabel("Bin Count")
 	plt.legend(loc="upper right")
 	plt.savefig(RHO_HISTOGRAM_OUTPUT, dpi=100)
