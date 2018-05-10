@@ -2,7 +2,3 @@
 potassium_ratios/lists/
 potassium_ratios/potassium.out
 
-# All of the output files from the Fe/Ti stats analysis
-fe_ti_stats/*.png
-fe_ti_stats/stats.out
-
