@@ -1,5 +1,6 @@
 # All of the output files from the potassium ratios analysis
 potassium_ratios/lists/
 potassium_ratios/potassium.out
-ti_traj/*_list
+ti_traj/pid_list
+ti_traj/sdf_list
 
