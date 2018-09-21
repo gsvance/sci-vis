@@ -1,6 +1,14 @@
 # All of the output files from the potassium ratios analysis
 potassium_ratios/lists/
 potassium_ratios/potassium.out
+
+# Thermal trajectories compiled executables
+thermal_trajectories/fetch_data
+
+# Output files from the thermal trajectories work
 thermal_trajectories/pid_list
 thermal_trajectories/sdf_list
+thermal_trajectories/time_fetched.dat
+thermal_trajectories/rho_fetched.dat
+thermal_trajectories/temp_fetched.dat
 
