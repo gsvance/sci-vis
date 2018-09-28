@@ -5,7 +5,7 @@
 # Overlay exponential and power law trjectories a la Magkotsios
 # Also produce cleaner plots with the visual spread statistics
 
-# Last modified 9/21/18 by Greg Vance
+# Last modified 9/28/18 by Greg Vance
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -69,7 +69,7 @@ print "number of particle ids:", n_id
 # Plot of iteration vs density with all lines
 plt.figure()
 for i in xrange(n_id):
-	plt.plot(iter, dens[i], "b-", alpha=0.2)
+	plt.plot(iter, dens[i], "b-", alpha=0.05)
 plt.yscale("log")
 plt.title("Densities of Yellow Region Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
@@ -80,7 +80,7 @@ plt.close()
 # Plot of iteration vs temperature with all lines
 plt.figure()
 for i in xrange(n_id):
-	plt.plot(iter, temp[i], "r-", alpha=0.2)
+	plt.plot(iter, temp[i], "r-", alpha=0.05)
 plt.yscale("log")
 plt.title("Temperatures of Yellow Region Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
@@ -89,20 +89,24 @@ plt.savefig(PLOT_DIR + "iter_vs_temp_lines.png", dpi=150)
 plt.close()
 
 ############################################################
-# CALCULATING MEAN & SPREAD STATS AND FITTING TRAJECTORIES
+# CALCULATING MEAN AND SPREAD STATISTICS
 ############################################################
 
-# Mean and std. dev. of density at every time
-mean_dens = np.mean(dens, axis=0)
+# Mean and std. dev. of density in log space at every time
+mean_dens = 10.**np.mean(np.log10(dens), axis=0)
 assert mean_dens.size == n_time
-sigma_dens = np.std(dens, axis=0)
+sigma_dens = 10.**np.std(np.log10(dens), axis=0)
 assert sigma_dens.size == n_time
 
-# Mean and std. dev. of temperature at every time
-mean_temp = np.mean(temp, axis=0)
+# Mean and std. dev. of temperature in log space at every time
+mean_temp = 10.**np.mean(np.log10(temp), axis=0)
 assert mean_temp.size == n_time
-sigma_temp = np.std(temp, axis=0)
+sigma_temp = 10.**np.std(np.log10(temp), axis=0)
 assert sigma_temp.size == n_time
+
+############################################################
+# DEFINING AND FITTING MAGKOTSIOS TRAJECTORIES
+############################################################
 
 # Exponential trajectories from Magkotsios Eq. 2
 def temp_exp(t, T0, tau):
@@ -116,21 +120,51 @@ def temp_pow(t, T0):
 def dens_pow(t, rho0):
 	return rho0 / (2. * t + 1.)**3
 
+# Power law trajectories with slope parameter alpha
+def temp_pow2(t, T0, alpha):
+	return T0 * (2. * t + 1.)**(-alpha)
+def dens_pow2(t, rho0, alpha):
+	return rho0 * (2. * t + 1.)**(-3. * alpha)
+
+# Fixed points density and temperature fits must start at
+fixed_rho0 = mean_dens[0]
+fixed_T0 = mean_temp[0]
+
 # Fit exponential trajectories using scipy.optimize.curve_fit
-opt, cov = spop.curve_fit(dens_exp, time, mean_dens, [1e4, 1e4], sigma_dens)
-dens_exp_best = tuple(opt)
+# We are fitting only the tau parameter, and it is being fit in log space
+def dens_exp_fit(t, tau):
+	global fixed_rho0
+	return np.log10(dens_exp(t, fixed_rho0, tau))
+opt, cov = spop.curve_fit(dens_exp_fit, time, np.log10(mean_dens), [1e3])
+dens_exp_best = tuple([fixed_rho0] + list(opt))
 print "dens exp best: rho0, tau = %.2e, %.2e" % (dens_exp_best)
-opt, cov = spop.curve_fit(temp_exp, time, mean_temp, [1e7, 100.], sigma_temp)
-temp_exp_best = tuple(opt)
+def temp_exp_fit(t, tau):
+	global fixed_T0
+	return np.log10(temp_exp(t, fixed_T0, tau))
+opt, cov = spop.curve_fit(temp_exp_fit, time, np.log10(mean_temp), [1e3])
+temp_exp_best = tuple([fixed_T0] + list(opt))
 print "temp exp best: T0, tau = %.2e, %.2e" % (temp_exp_best)
 
-# Fit power law trajectories using scipy.optimize.curve_fit
-opt, cov = spop.curve_fit(dens_pow, time, mean_dens, [1e6], sigma_dens)
-dens_pow_best = tuple(opt)
+# "Fit" the power law trajectories with no real fitting parameters
+dens_pow_best = tuple([fixed_rho0])
 print "dens pow best: rho0 = %.2e" % (dens_pow_best)
-opt, cov = spop.curve_fit(temp_pow, time, mean_temp, [1e10], sigma_temp)
-temp_pow_best = tuple(opt)
+temp_pow_best = tuple([fixed_T0])
 print "temp pow best: T0 = %.2e" % (temp_pow_best)
+
+# Fit power law trajectories with slopes using scipy.optimize.curve_fit
+# We are fitting only the alpha parameter, and it is being fit in log space
+def dens_pow2_fit(t, alpha):
+	global fixed_rho0
+	return np.log10(dens_pow2(t, fixed_rho0, alpha))
+opt, cov = spop.curve_fit(dens_pow2_fit, time, np.log10(mean_dens), [1.])
+dens_pow2_best = tuple([fixed_rho0] + list(opt))
+print "dens pow2 best: rho0, alpha = %.2e, %.2e" % (dens_pow2_best)
+def temp_pow2_fit(t, alpha):
+	global fixed_T0
+	return np.log10(temp_pow2(t, fixed_T0, alpha))
+opt, cov = spop.curve_fit(temp_pow2_fit, time, np.log10(mean_temp), [1.])
+temp_pow2_best = tuple([fixed_T0] + list(opt))
+print "temp pow2 best: T0, alpha = %.2e, %.2e" % (temp_pow2_best)
 
 ############################################################
 # SPAGHETTI PLOTS FOR DENS AND TEMP VS TIME
@@ -139,9 +173,10 @@ print "temp pow best: T0 = %.2e" % (temp_pow_best)
 # Plot of time vs density with all lines
 plt.figure()
 for i in xrange(n_id):
-	plt.plot(time, dens[i], "b-", alpha=0.2)
+	plt.plot(time, dens[i], "b-", alpha=0.05)
 plt.plot(time, dens_exp(time, *dens_exp_best), "k--", label="Exponential")
 plt.plot(time, dens_pow(time, *dens_pow_best), "k:", label="Power Law")
+plt.plot(time, dens_pow2(time, *dens_pow2_best), "k-.", label="Power Law 2")
 plt.xscale("log")
 plt.yscale("log")
 plt.legend(loc="lower left")
@@ -154,16 +189,16 @@ plt.close()
 # Plot of time vs temperature with all lines
 plt.figure()
 for i in xrange(n_id):
-	plt.plot(time, temp[i], "r-", alpha=0.2)
+	plt.plot(time, temp[i], "r-", alpha=0.05)
 plt.plot(time, temp_exp(time, *temp_exp_best), "k--", label="Exponential")
 plt.plot(time, temp_pow(time, *temp_pow_best), "k:", label="Power Law")
+plt.plot(time, temp_pow2(time, *temp_pow2_best), "k-.", label="Power Law 2")
 plt.xscale("log")
 plt.yscale("log")
 plt.legend(loc="lower left")
 plt.title("Temperatures of Yellow Region Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
-plt.ylim(1e-5, 1e12)
 plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
 plt.close()
 
@@ -174,16 +209,14 @@ plt.close()
 # Plot of time vs density with mean and sigmas
 plt.figure()
 for s in xrange(4):
-	plus = mean_dens + s * sigma_dens
-	col = ["black", "navy", "blue", "cyan"][s]
+	plus = 10.**(np.log10(mean_dens) + s * np.log10(sigma_dens))
+	col = ["black", "darkblue", "blue", "lightblue"][s]
 	sty = ["solid", "dashdot", "dashed", "dotted"][s]
 	lab = ["Mean", "1$\\sigma$", "2$\\sigma$", "3$\\sigma$"][s]
 	plt.plot(time, plus, color=col, linestyle=sty, label=lab)
 	if s > 0:
-		minus = mean_dens - s * sigma_dens
+		minus = 10.**(np.log10(mean_dens) - s * np.log10(sigma_dens))
 		plt.plot(time, minus, color=col, linestyle=sty)
-#plt.plot(time, temp_exp(time, *temp_exp_best), "k--", label="Exponential")
-#plt.plot(time, temp_pow(time, *temp_pow_best), "k:", label="Power Law")
 plt.xscale("log")
 plt.yscale("log")
 plt.legend(loc="lower left")
@@ -191,5 +224,25 @@ plt.title("Densities of Yellow Region Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
+plt.close()
+
+# Plot of time vs temperature with mean and sigmas
+plt.figure()
+for s in xrange(4):
+	plus = 10.**(np.log10(mean_temp) + s * np.log10(sigma_temp))
+	col = ["black", "darkred", "red", "pink"][s]
+	sty = ["solid", "dashdot", "dashed", "dotted"][s]
+	lab = ["Mean", "1$\\sigma$", "2$\\sigma$", "3$\\sigma$"][s]
+	plt.plot(time, plus, color=col, linestyle=sty, label=lab)
+	if s > 0:
+		minus = 10.**(np.log10(mean_temp) - s * np.log10(sigma_temp))
+		plt.plot(time, minus, color=col, linestyle=sty)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend(loc="lower left")
+plt.title("Temperatures of Yellow Region Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Temperatures (K)")
+plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
 plt.close()
 
