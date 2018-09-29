@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# Read the fetched data files and do the actual plotting work
-# Make spaghetti plots of the yellow region particle trajectories
-# Overlay exponential and power law trjectories a la Magkotsios
-# Also produce cleaner plots with the visual spread statistics
+## Read the fetched data files and do the actual plotting work
+## Make spaghetti plots of the yellow region particle trajectories
+## Overlay exponential and power law trjectories a la Magkotsios
+## Also produce cleaner plots with the visual spread statistics
 
 # Last modified 9/28/18 by Greg Vance
 
@@ -15,6 +15,9 @@ import scipy.optimize as spop
 TIME_FILE = "time_fetched.dat"
 RHO_FILE = "rho_fetched.dat"
 TEMP_FILE = "temp_fetched.dat"
+
+# File with an alternate particle IDs list tagging them by region
+REGIONS_FILE = "regions.out"
 
 # Subdirectory to store all plot images
 PLOT_DIR = "images/"
@@ -44,11 +47,18 @@ rho = np.loadtxt(RHO_FILE, np.float, usecols=range(1, n_time + 1))
 temp_id = np.loadtxt(TEMP_FILE, np.int, usecols=[0])
 temp = np.loadtxt(TEMP_FILE, np.float, usecols=range(1, n_time + 1))
 
+# Read the region-tagged ID list from file
+region_id = np.loadtxt(REGIONS_FILE, np.int, usecols=[0])
+region = np.loadtxt(REGIONS_FILE, "S1", usecols=[1])
+
 # Sanity checks on the lists of IDs
 assert len(rho_id) == len(temp_id)
+assert len(rho_id) == len(region_id)
 n_id = len(rho_id)
 assert all(rho_id == temp_id)
+assert all(rho_id == region_id)
 id = rho_id
+assert len(region) == n_id
 
 # Sanity checks on the rho and temp data
 assert rho.shape == (n_id, n_time)
@@ -68,20 +78,32 @@ print "number of particle ids:", n_id
 
 # Plot of iteration vs density with all lines
 plt.figure()
+labeled = [False, False, False]
 for i in xrange(n_id):
-	plt.plot(iter, dens[i], "b-", alpha=0.05)
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(iter, dens[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(iter, dens[i], color=col, alpha=0.05)
 plt.yscale("log")
-plt.title("Densities of Yellow Region Particles vs. Iteration")
+plt.legend()
+plt.title("Densities of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "iter_vs_dens_lines.png", dpi=150)
 plt.close()
+
+raise SystemExit
 
 # Plot of iteration vs temperature with all lines
 plt.figure()
 for i in xrange(n_id):
 	plt.plot(iter, temp[i], "r-", alpha=0.05)
 plt.yscale("log")
+plt.legend()
 plt.title("Temperatures of Yellow Region Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Temperature (K)")
@@ -242,7 +264,7 @@ plt.yscale("log")
 plt.legend(loc="lower left")
 plt.title("Temperatures of Yellow Region Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Temperature (K)")
+plt.ylabel("Temperatures (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
 plt.close()
 
