@@ -6,10 +6,16 @@ potassium_ratios/potassium.out
 thermal_trajectories/fetch_data
 
 # Output files from the thermal trajectories work
+thermal_trajectories/pid_list
+thermal_trajectories/sdf_list
 thermal_trajectories/yellow_region/pid_list
 thermal_trajectories/yellow_region/sdf_list
 thermal_trajectories/yellow_region/time_fetched.dat
 thermal_trajectories/yellow_region/rho_fetched.dat
 thermal_trajectories/yellow_region/temp_fetched.dat
 thermal_trajectories/yellow_region/images/
+thermal_trajectories/entropy_regions/pid_list
+thermal_trajectories/entropy_regions/sdf_list
+thermal_trajectories/entropy_regions/regions.out
+thermal_trajectories/entropy_regions/images/
 
