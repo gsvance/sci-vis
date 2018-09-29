@@ -2,20 +2,30 @@
 potassium_ratios/lists/
 potassium_ratios/potassium.out
 
-# Thermal trajectories compiled executables
+# Thermal trajectories compiled data fetcher executable
 thermal_trajectories/fetch_data
 
-# Output files from the thermal trajectories work
+# Output files associated the thermal trajectories fetching work
 thermal_trajectories/pid_list
 thermal_trajectories/sdf_list
+thermal_trajectories/time_fetched.dat
+thermal_trajectories/rho_fetched.dat
+thermal_trajectories/temp_fetched.dat
+
+# Output files from the yellow region trajectories analysis
 thermal_trajectories/yellow_region/pid_list
 thermal_trajectories/yellow_region/sdf_list
 thermal_trajectories/yellow_region/time_fetched.dat
 thermal_trajectories/yellow_region/rho_fetched.dat
 thermal_trajectories/yellow_region/temp_fetched.dat
 thermal_trajectories/yellow_region/images/
+
+# Output files from the entropy regions trajectories analysis
 thermal_trajectories/entropy_regions/pid_list
 thermal_trajectories/entropy_regions/sdf_list
 thermal_trajectories/entropy_regions/regions.out
+thermal_trajectories/entropy_regions/time_fetched.dat
+thermal_trajectories/entropy_regions/rho_fetched.dat
+thermal_trajectories/entropy_regions/temp_fetched.dat
 thermal_trajectories/entropy_regions/images/
 
