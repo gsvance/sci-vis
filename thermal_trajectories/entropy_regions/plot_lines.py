@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-### Read the fetched data files and do the actual plotting work
-### Make spaghetti plots of the yellow region particle trajectories
-### Overlay exponential and power law trjectories a la Magkotsios
-### Also produce cleaner plots with the visual spread statistics
+# Read all fetched data files and do some trajectory plotting work
+# Make spaghetti plots of the three entropy regions in different colors
 
-# Last modified 10/5/18 by Greg Vance
+# Last modified 10/8/18 by Greg Vance
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -114,6 +112,52 @@ plt.title("Temperatures of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "iter_vs_temp_lines.png", dpi=150)
+plt.close()
+
+############################################################
+# SPAGHETTI PLOTS FOR DENS AND TEMP VS TIME
+############################################################
+
+# Plot of time vs density with all lines
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(time, dens[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(time, dens[i], color=col, alpha=0.05)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend()
+plt.title("Densities of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Density (g/cm$^3$)")
+plt.savefig(PLOT_DIR + "time_vs_dens_lines.png", dpi=150)
+plt.close()
+
+# Plot of time vs temperature with all lines
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(time, temp[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(time, temp[i], color=col, alpha=0.05)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend()
+plt.title("Temperatures of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Temperature (K)")
+plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
 plt.close()
 
 ############################################################
