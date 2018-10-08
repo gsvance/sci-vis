@@ -1,11 +1,13 @@
 // Read in prepared list files regarding parts of the cco2 SDF files
 // Extract the corresponding thermal trajectory data to new files
+// This data includes times, densities, temperatures, and velocities
 
-// Last modified 9/21/18 by Greg Vance
+// Last modified 10/8/18 by Greg Vance
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 // Fetch lists prepared ahead-of-time for this program
 #define PID_FILE "pid_list"
@@ -15,6 +17,7 @@
 #define TIME_FILE "time_fetched.dat"
 #define RHO_FILE "rho_fetched.dat"
 #define TEMP_FILE "temp_fetched.dat"
+#define VRAD_FILE "vrad_fetched.dat"
 
 // Particle struct taken from the cco2 SDF file headers
 typedef struct {
@@ -45,6 +48,7 @@ int * read_pid_file(int * n_id);
 int get_offset(char * sdf_name);
 int get_nobj(char * sdf_name, int offset);
 int find_index(int x, int * set, int n_set);
+float hypot3d(float x, float y, float z);
 float ** alloc_float_2d(int rows, int cols);
 void free_float_2d(float ** ptr, int rows, int cols);
 void write_outfile(char * name, int * id, float ** dat, int n_id, int n_sdf);
@@ -56,7 +60,7 @@ int main()
 	FILE * listfp, * timefp, * sdfp;
 	char tpos[100], name[500];
 	particle part;
-	float ** rho, ** temp;
+	float ** rho, ** temp, ** vrad;
 	
 	printf("reading input selection files\n");
 	
@@ -71,6 +75,7 @@ int main()
 	
 	rho = alloc_float_2d(n_id, n_sdf);
 	temp = alloc_float_2d(n_id, n_sdf);
+	vrad = alloc_float_2d(n_id, n_sdf);
 	
 	printf("reading data from SDF files\n");
 	
@@ -96,6 +101,7 @@ int main()
 			{
 				rho[i][sdf] = part.rho;
 				temp[i][sdf] = part.temp;
+				vrad[i][sdf] = hypot3d(part.vx, part.vy, part.vz);
 			}
 		}
 		
@@ -109,12 +115,14 @@ int main()
 	
 	write_outfile(RHO_FILE, id, rho, n_id, n_sdf);
 	write_outfile(TEMP_FILE, id, temp, n_id, n_sdf);
+	write_outfile(VRAD_FILE, id, vrad, n_id, n_sdf);
 	
 	printf("cleaning up\n");
 	
 	free(id);
 	free_float_2d(rho, n_id, n_sdf);
 	free_float_2d(temp, n_id, n_sdf);
+	free_float_2d(vrad, n_id, n_sdf);
 	
 	return 0;
 }
@@ -206,6 +214,12 @@ int find_index(int x, int * set, int n_set)
 	return -1;
 }
 
+// Return the sum of three floats added in quadrature
+float hypot3d(float x, float y, float z)
+{
+	return hypotf(hypotf(x, y), z);
+}
+
 // Allocate a zeroed 2d array of floats with given size
 float ** alloc_float_2d(int rows, int cols)
 {
@@ -247,7 +261,7 @@ void free_float_2d(float ** ptr, int rows, int cols)
 	free(ptr);
 }
 
-// Write rho or temp data to an output file
+// Write rho, temp, or vrad data to an output file
 void write_outfile(char * name, int * id, float ** dat, int n_id, int n_sdf)
 {
 	FILE * ofp;
