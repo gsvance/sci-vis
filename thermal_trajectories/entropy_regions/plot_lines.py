@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-## Read the fetched data files and do the actual plotting work
-## Make spaghetti plots of the yellow region particle trajectories
-## Overlay exponential and power law trjectories a la Magkotsios
-## Also produce cleaner plots with the visual spread statistics
+### Read the fetched data files and do the actual plotting work
+### Make spaghetti plots of the yellow region particle trajectories
+### Overlay exponential and power law trjectories a la Magkotsios
+### Also produce cleaner plots with the visual spread statistics
 
-# Last modified 9/28/18 by Greg Vance
+# Last modified 10/5/18 by Greg Vance
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -96,15 +96,21 @@ plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "iter_vs_dens_lines.png", dpi=150)
 plt.close()
 
-raise SystemExit
-
 # Plot of iteration vs temperature with all lines
 plt.figure()
+labeled = [False, False, False]
 for i in xrange(n_id):
-	plt.plot(iter, temp[i], "r-", alpha=0.05)
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(iter, temp[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(iter, temp[i], color=col, alpha=0.05)
 plt.yscale("log")
 plt.legend()
-plt.title("Temperatures of Yellow Region Particles vs. Iteration")
+plt.title("Temperatures of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "iter_vs_temp_lines.png", dpi=150)
@@ -125,6 +131,50 @@ mean_temp = 10.**np.mean(np.log10(temp), axis=0)
 assert mean_temp.size == n_time
 sigma_temp = 10.**np.std(np.log10(temp), axis=0)
 assert sigma_temp.size == n_time
+
+# Make boolean arrays for each of the 3 regions
+west = (region == "W")
+east = (region == "E")
+north = (region == "N")
+assert np.sum(west) + np.sum(east) + np.sum(north) == n_id
+
+# Calculate density mean and std. dev. for the west region
+mean_dens_west = 10.**np.mean(np.log10(dens[west]), axis=0)
+assert mean_dens_west.size == n_time
+sigma_dens_west = 10.**np.std(np.log10(dens[west]), axis=0)
+assert sigma_dens_west.size == n_time
+
+# Calculate density mean and std. dev. for the east region
+mean_dens_east = 10.**np.mean(np.log10(dens[east]), axis=0)
+assert mean_dens_east.size == n_time
+sigma_dens_east = 10.**np.std(np.log10(dens[east]), axis=0)
+assert sigma_dens_east.size == n_time
+
+# Calculate density mean and std. dev. for the north region
+mean_dens_north = 10.**np.mean(np.log10(dens[north]), axis=0)
+assert mean_dens_north.size == n_time
+sigma_dens_north = 10.**np.std(np.log10(dens[north]), axis=0)
+assert sigma_dens_north.size == n_time
+
+# Calculate temperature mean and std. dev. for the west region
+mean_temp_west = 10.**np.mean(np.log10(temp[west]), axis=0)
+assert mean_temp_west.size == n_time
+sigma_temp_west = 10.**np.std(np.log10(temp[west]), axis=0)
+assert sigma_temp_west.size == n_time
+
+# Calculate temperature mean and std. dev. for the east region
+mean_temp_east = 10.**np.mean(np.log10(temp[east]), axis=0)
+assert mean_temp_east.size == n_time
+sigma_temp_east = 10.**np.std(np.log10(temp[east]), axis=0)
+assert sigma_temp_east.size == n_time
+
+# Calculate temperature mean and std. dev. for the north region
+mean_temp_north = 10.**np.mean(np.log10(temp[north]), axis=0)
+assert mean_temp_north.size == n_time
+sigma_temp_north = 10.**np.std(np.log10(temp[north]), axis=0)
+assert sigma_temp_north.size == n_time
+
+raise SystemExit
 
 ############################################################
 # DEFINING AND FITTING MAGKOTSIOS TRAJECTORIES
