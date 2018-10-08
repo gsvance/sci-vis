@@ -13,6 +13,7 @@ import scipy.optimize as spop
 TIME_FILE = "time_fetched.dat"
 RHO_FILE = "rho_fetched.dat"
 TEMP_FILE = "temp_fetched.dat"
+VRAD_FILE = "vrad_fetched.dat"
 
 # File with an alternate particle IDs list tagging them by region
 REGIONS_FILE = "regions.out"
@@ -25,6 +26,7 @@ SNSPH_TIME = 100. # s
 SNSPH_MASS = 1e-6 * 1.9889e33 # g
 SNSPH_LENGTH = 6.955e10 # cm
 SNSPH_DENSITY = SNSPH_MASS / SNSPH_LENGTH**3
+SNSPH_VELOCITY = SNSPH_LENGTH / SNSPH_TIME
 
 # Read the iter and tpos data points from file
 iter = np.loadtxt(TIME_FILE, np.int, usecols=[0])
@@ -45,25 +47,35 @@ rho = np.loadtxt(RHO_FILE, np.float, usecols=range(1, n_time + 1))
 temp_id = np.loadtxt(TEMP_FILE, np.int, usecols=[0])
 temp = np.loadtxt(TEMP_FILE, np.float, usecols=range(1, n_time + 1))
 
+# Read the radial velocity data from file
+vrad_id = np.loadtxt(VRAD_FILE, np.int, usecols=[0])
+vrad = np.loadtxt(VRAD_FILE, np.float, usecols=range(1, n_time + 1))
+
 # Read the region-tagged ID list from file
 region_id = np.loadtxt(REGIONS_FILE, np.int, usecols=[0])
 region = np.loadtxt(REGIONS_FILE, "S1", usecols=[1])
 
 # Sanity checks on the lists of IDs
 assert len(rho_id) == len(temp_id)
+assert len(rho_id) == len(vrad_id)
 assert len(rho_id) == len(region_id)
 n_id = len(rho_id)
 assert all(rho_id == temp_id)
+assert all(rho_id == vrad_id)
 assert all(rho_id == region_id)
 id = rho_id
 assert len(region) == n_id
 
-# Sanity checks on the rho and temp data
+# Sanity checks on the rho, temp, and vrad data
 assert rho.shape == (n_id, n_time)
 assert temp.shape == (n_id, n_time)
+assert vrad.shape == (n_id, n_time)
 
 # Convert densities to g/cm^3
 dens = rho * SNSPH_DENSITY
+
+# Convert radial velocities to cm/s
+rvel = vrad * SNSPH_VELOCITY
 
 # Print the results of the sanity checks
 print "fetched data read in and sanity-checked"
@@ -71,7 +83,7 @@ print "number of points in time:", n_time
 print "number of particle ids:", n_id
 
 ############################################################
-# SPAGHETTI PLOTS FOR DENS AND TEMP VS ITER
+# SPAGHETTI PLOTS FOR DENS, TEMP, AND RVEL VS ITER
 ############################################################
 
 # Plot of iteration vs density with all lines
@@ -114,8 +126,28 @@ plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "iter_vs_temp_lines.png", dpi=150)
 plt.close()
 
+# Plot of iteration vs radial velocity with all lines
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(iter, rvel[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(iter, rvel[i], color=col, alpha=0.05)
+plt.yscale("log")
+plt.legend()
+plt.title("Velocities of 3 Regions of Particles vs. Iteration")
+plt.xlabel("SNSPH Iteration")
+plt.ylabel("Radial Velocity (cm/s)")
+plt.savefig(PLOT_DIR + "iter_vs_rvel_lines.png", dpi=150)
+plt.close()
+
 ############################################################
-# SPAGHETTI PLOTS FOR DENS AND TEMP VS TIME
+# SPAGHETTI PLOTS FOR DENS, TEMP, and RVEL VS TIME
 ############################################################
 
 # Plot of time vs density with all lines
@@ -158,6 +190,27 @@ plt.title("Temperatures of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
+plt.close()
+
+# Plot of time vs radial velocity with all lines
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(time, rvel[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(time, rvel[i], color=col, alpha=0.05)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend()
+plt.title("Velocities of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Radial Velocity (cm/s)")
+plt.savefig(PLOT_DIR + "time_vs_rvel_lines.png", dpi=150)
 plt.close()
 
 ############################################################
