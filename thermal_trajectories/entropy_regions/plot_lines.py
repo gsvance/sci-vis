@@ -63,7 +63,8 @@ n_id = len(rho_id)
 assert all(rho_id == temp_id)
 assert all(rho_id == vrad_id)
 assert all(rho_id == region_id)
-id = rho_id
+id = np.copy(rho_id)
+del rho_id, temp_id, vrad_id, region_id
 assert len(region) == n_id
 
 # Sanity checks on the rho, temp, and vrad data
@@ -219,17 +220,17 @@ plt.close()
 
 # Mean and std. dev. of density in log space at every time
 mean_dens = 10.**np.mean(np.log10(dens), axis=0)
-assert mean_dens.size == n_time
 sigma_dens = 10.**np.std(np.log10(dens), axis=0)
-assert sigma_dens.size == n_time
 
 # Mean and std. dev. of temperature in log space at every time
 mean_temp = 10.**np.mean(np.log10(temp), axis=0)
-assert mean_temp.size == n_time
 sigma_temp = 10.**np.std(np.log10(temp), axis=0)
-assert sigma_temp.size == n_time
 
-# Make boolean arrays for each of the 3 regions
+# Mean and std. dev. of radial velocity in log space at every time
+mean_rvel = 10.**np.mean(np.log10(rvel), axis=0)
+sigma_rvel = 10.**np.std(np.log10(rvel), axis=0)
+
+# Make boolean arrays for each of the 3 regions and check sanity
 west = (region == "W")
 east = (region == "E")
 north = (region == "N")
@@ -237,43 +238,41 @@ assert np.sum(west) + np.sum(east) + np.sum(north) == n_id
 
 # Calculate density mean and std. dev. for the west region
 mean_dens_west = 10.**np.mean(np.log10(dens[west]), axis=0)
-assert mean_dens_west.size == n_time
 sigma_dens_west = 10.**np.std(np.log10(dens[west]), axis=0)
-assert sigma_dens_west.size == n_time
 
 # Calculate density mean and std. dev. for the east region
 mean_dens_east = 10.**np.mean(np.log10(dens[east]), axis=0)
-assert mean_dens_east.size == n_time
 sigma_dens_east = 10.**np.std(np.log10(dens[east]), axis=0)
-assert sigma_dens_east.size == n_time
 
 # Calculate density mean and std. dev. for the north region
 mean_dens_north = 10.**np.mean(np.log10(dens[north]), axis=0)
-assert mean_dens_north.size == n_time
 sigma_dens_north = 10.**np.std(np.log10(dens[north]), axis=0)
-assert sigma_dens_north.size == n_time
 
 # Calculate temperature mean and std. dev. for the west region
 mean_temp_west = 10.**np.mean(np.log10(temp[west]), axis=0)
-assert mean_temp_west.size == n_time
 sigma_temp_west = 10.**np.std(np.log10(temp[west]), axis=0)
-assert sigma_temp_west.size == n_time
 
 # Calculate temperature mean and std. dev. for the east region
 mean_temp_east = 10.**np.mean(np.log10(temp[east]), axis=0)
-assert mean_temp_east.size == n_time
 sigma_temp_east = 10.**np.std(np.log10(temp[east]), axis=0)
-assert sigma_temp_east.size == n_time
 
 # Calculate temperature mean and std. dev. for the north region
 mean_temp_north = 10.**np.mean(np.log10(temp[north]), axis=0)
-assert mean_temp_north.size == n_time
 sigma_temp_north = 10.**np.std(np.log10(temp[north]), axis=0)
-assert sigma_temp_north.size == n_time
 
-raise SystemExit
+# Calculate radial velocity mean and std. dev. for the west region
+mean_rvel_west = 10.**np.mean(np.log10(rvel[west]), axis=0)
+sigma_rvel_west = 10.**np.std(np.log10(rvel[west]), axis=0)
 
-############################################################
+# Calculate radial velocity mean and std. dev. for the east region
+mean_rvel_east = 10.**np.mean(np.log10(rvel[east]), axis=0)
+sigma_rvel_east = 10.**np.std(np.log10(rvel[east]), axis=0)
+
+# Calculate radial velocity mean and std. dev. for the north region
+mean_rvel_north = 10.**np.mean(np.log10(rvel[north]), axis=0)
+sigma_rvel_north = 10.**np.std(np.log10(rvel[north]), axis=0)
+
+'''############################################################
 # DEFINING AND FITTING MAGKOTSIOS TRAJECTORIES
 ############################################################
 
@@ -333,9 +332,9 @@ def temp_pow2_fit(t, alpha):
 	return np.log10(temp_pow2(t, fixed_T0, alpha))
 opt, cov = spop.curve_fit(temp_pow2_fit, time, np.log10(mean_temp), [1.])
 temp_pow2_best = tuple([fixed_T0] + list(opt))
-print "temp pow2 best: T0, alpha = %.2e, %.2e" % (temp_pow2_best)
+print "temp pow2 best: T0, alpha = %.2e, %.2e" % (temp_pow2_best)'''
 
-############################################################
+'''############################################################
 # SPAGHETTI PLOTS FOR DENS AND TEMP VS TIME
 ############################################################
 
@@ -369,9 +368,9 @@ plt.title("Temperatures of Yellow Region Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
-plt.close()
+plt.close()'''
 
-############################################################
+'''############################################################
 # CLEANER PLOTS OF DENS AND TEMP VS TIME WITH SIGMAS
 ############################################################
 
@@ -413,5 +412,5 @@ plt.title("Temperatures of Yellow Region Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperatures (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
-plt.close()
+plt.close()'''
 
