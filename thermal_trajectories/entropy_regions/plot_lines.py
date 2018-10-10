@@ -272,6 +272,70 @@ sigma_rvel_east = 10.**np.std(np.log10(rvel[east]), axis=0)
 mean_rvel_north = 10.**np.mean(np.log10(rvel[north]), axis=0)
 sigma_rvel_north = 10.**np.std(np.log10(rvel[north]), axis=0)
 
+############################################################
+# PLOTTING MEAN TRAJECTORIES OF EACH REGION WITH SPREADS
+############################################################
+
+# Plot mean density trajectories of each region with spread
+plt.figure()
+for r in xrange(3):
+	mu = [mean_dens_west, mean_dens_east, mean_dens_north][r]
+	sig = [sigma_dens_west, sigma_dens_east, sigma_dens_north][r]
+	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "yellowgreen", "blue"][r]
+	plus = 10.**(np.log10(mu) + np.log10(sig))
+	minus = 10.**(np.log10(mu) - np.log10(sig))
+	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
+	plt.plot(time, mu, color=col, label=lab)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend(loc="lower left")
+plt.title("Densities of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Density (g/cm$^3$)")
+plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
+plt.close()
+
+# Plot mean temperature trajectories of each region with spread
+plt.figure()
+for r in xrange(3):
+	mu = [mean_temp_west, mean_temp_east, mean_temp_north][r]
+	sig = [sigma_temp_west, sigma_temp_east, sigma_temp_north][r]
+	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "yellowgreen", "blue"][r]
+	plus = 10.**(np.log10(mu) + np.log10(sig))
+	minus = 10.**(np.log10(mu) - np.log10(sig))
+	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
+	plt.plot(time, mu, color=col, label=lab)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend(loc="lower left")
+plt.title("Temperatures of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Temperature (K)")
+plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
+plt.close()
+
+# Plot mean radial velocity trajectories of each region with spread
+plt.figure()
+for r in xrange(3):
+	mu = [mean_rvel_west, mean_rvel_east, mean_rvel_north][r]
+	sig = [sigma_rvel_west, sigma_rvel_east, sigma_rvel_north][r]
+	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "yellowgreen", "blue"][r]
+	plus = 10.**(np.log10(mu) + np.log10(sig))
+	minus = 10.**(np.log10(mu) - np.log10(sig))
+	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
+	plt.plot(time, mu, color=col, label=lab)
+plt.xscale("log")
+plt.yscale("log")
+plt.legend(loc="lower left")
+plt.title("Velocities of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Radial Velocity (cm/s)")
+plt.savefig(PLOT_DIR + "time_vs_rvel_sigma.png", dpi=150)
+plt.close()
+
 '''############################################################
 # DEFINING AND FITTING MAGKOTSIOS TRAJECTORIES
 ############################################################
