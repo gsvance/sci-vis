@@ -2,8 +2,10 @@
 
 # Read all fetched data files and do some trajectory plotting work
 # Make spaghetti plots of the three entropy regions in different colors
+# Create cleaner plots showing the mean and spread of the trajectories
+# Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 10/8/18 by Greg Vance
+# Last modified 10/10/18 by Greg Vance
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -148,7 +150,7 @@ plt.savefig(PLOT_DIR + "iter_vs_rvel_lines.png", dpi=150)
 plt.close()
 
 ############################################################
-# SPAGHETTI PLOTS FOR DENS, TEMP, and RVEL VS TIME
+# SPAGHETTI PLOTS FOR DENS, TEMP, AND RVEL VS TIME
 ############################################################
 
 # Plot of time vs density with all lines
@@ -289,7 +291,7 @@ for r in xrange(3):
 	plt.plot(time, mu, color=col, label=lab)
 plt.xscale("log")
 plt.yscale("log")
-plt.legend(loc="lower left")
+plt.legend()
 plt.title("Densities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Density (g/cm$^3$)")
@@ -309,7 +311,7 @@ for r in xrange(3):
 	plt.plot(time, mu, color=col, label=lab)
 plt.xscale("log")
 plt.yscale("log")
-plt.legend(loc="lower left")
+plt.legend()
 plt.title("Temperatures of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
@@ -329,14 +331,14 @@ for r in xrange(3):
 	plt.plot(time, mu, color=col, label=lab)
 plt.xscale("log")
 plt.yscale("log")
-plt.legend(loc="lower left")
+plt.legend()
 plt.title("Velocities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_sigma.png", dpi=150)
 plt.close()
 
-'''############################################################
+############################################################
 # DEFINING AND FITTING MAGKOTSIOS TRAJECTORIES
 ############################################################
 
@@ -358,123 +360,137 @@ def temp_pow2(t, T0, alpha):
 def dens_pow2(t, rho0, alpha):
 	return rho0 * (2. * t + 1.)**(-3. * alpha)
 
-# Fixed points density and temperature fits must start at
-fixed_rho0 = mean_dens[0]
-fixed_T0 = mean_temp[0]
+# Define a general function to do the exponential trajectory fitting
+def exp_fitter(dens_data, temp_data):
+	fixed_rho0 = dens_data[0]
+	fixed_T0 = temp_data[0]
+	def dens_exp_fit(t, tau):
+		return np.log10(dens_exp(t, fixed_rho0, tau))
+	def temp_exp_fit(t, tau):
+		return np.log10(temp_exp(t, fixed_T0, tau))
+	dopt, dcov = spop.curve_fit(dens_exp_fit, time, np.log10(dens_data), [1e3])
+	topt, tcov = spop.curve_fit(temp_exp_fit, time, np.log10(temp_data), [1e3])
+	dtup = tuple([fixed_rho0] + list(dopt))
+	ttup = tuple([fixed_T0] + list(topt))
+	return dtup, ttup
 
-# Fit exponential trajectories using scipy.optimize.curve_fit
-# We are fitting only the tau parameter, and it is being fit in log space
-def dens_exp_fit(t, tau):
-	global fixed_rho0
-	return np.log10(dens_exp(t, fixed_rho0, tau))
-opt, cov = spop.curve_fit(dens_exp_fit, time, np.log10(mean_dens), [1e3])
-dens_exp_best = tuple([fixed_rho0] + list(opt))
-print "dens exp best: rho0, tau = %.2e, %.2e" % (dens_exp_best)
-def temp_exp_fit(t, tau):
-	global fixed_T0
-	return np.log10(temp_exp(t, fixed_T0, tau))
-opt, cov = spop.curve_fit(temp_exp_fit, time, np.log10(mean_temp), [1e3])
-temp_exp_best = tuple([fixed_T0] + list(opt))
-print "temp exp best: T0, tau = %.2e, %.2e" % (temp_exp_best)
+# Fit exponential trajectories in log space with only the tau parameter
+dens_exp_best_west, temp_exp_best_west = exp_fitter(mean_dens_west,
+	mean_temp_west)
+dens_exp_best_east, temp_exp_best_east = exp_fitter(mean_dens_east,
+	mean_temp_east)
+dens_exp_best_north, temp_exp_best_north = exp_fitter(mean_dens_north,
+	mean_temp_north)
 
 # "Fit" the power law trajectories with no real fitting parameters
-dens_pow_best = tuple([fixed_rho0])
-print "dens pow best: rho0 = %.2e" % (dens_pow_best)
-temp_pow_best = tuple([fixed_T0])
-print "temp pow best: T0 = %.2e" % (temp_pow_best)
+dens_pow_best_west = tuple([mean_dens_west[0]])
+temp_pow_best_west = tuple([mean_temp_west[0]])
+dens_pow_best_east = tuple([mean_dens_east[0]])
+temp_pow_best_east = tuple([mean_temp_east[0]])
+dens_pow_best_north = tuple([mean_dens_north[0]])
+temp_pow_best_north = tuple([mean_temp_north[0]])
 
-# Fit power law trajectories with slopes using scipy.optimize.curve_fit
-# We are fitting only the alpha parameter, and it is being fit in log space
-def dens_pow2_fit(t, alpha):
-	global fixed_rho0
-	return np.log10(dens_pow2(t, fixed_rho0, alpha))
-opt, cov = spop.curve_fit(dens_pow2_fit, time, np.log10(mean_dens), [1.])
-dens_pow2_best = tuple([fixed_rho0] + list(opt))
-print "dens pow2 best: rho0, alpha = %.2e, %.2e" % (dens_pow2_best)
-def temp_pow2_fit(t, alpha):
-	global fixed_T0
-	return np.log10(temp_pow2(t, fixed_T0, alpha))
-opt, cov = spop.curve_fit(temp_pow2_fit, time, np.log10(mean_temp), [1.])
-temp_pow2_best = tuple([fixed_T0] + list(opt))
-print "temp pow2 best: T0, alpha = %.2e, %.2e" % (temp_pow2_best)'''
+# Define a general function to do the sloped power law trajectory fitting
+def pow2_fitter(dens_data, temp_data):
+	fixed_rho0 = dens_data[0]
+	fixed_T0 = temp_data[0]
+	def dens_pow2_fit(t, alpha):
+		return np.log10(dens_pow2(t, fixed_rho0, alpha))
+	def temp_pow2_fit(t, alpha):
+		return np.log10(temp_pow2(t, fixed_T0, alpha))
+	dopt, dcov = spop.curve_fit(dens_pow2_fit, time, np.log10(dens_data), [1.])
+	topt, tcov = spop.curve_fit(temp_pow2_fit, time, np.log10(temp_data), [1.])
+	dtup = tuple([fixed_rho0] + list(dopt))
+	ttup = tuple([fixed_T0] + list(topt))
+	return dtup, ttup
 
-'''############################################################
-# SPAGHETTI PLOTS FOR DENS AND TEMP VS TIME
+# Fit power law trajectories in log space with added alpha slope parameter
+dens_pow2_best_west, temp_pow2_best_west = pow2_fitter(mean_dens_west,
+	mean_temp_west)
+dens_pow2_best_east, temp_pow2_best_east = pow2_fitter(mean_dens_east,
+	mean_temp_east)
+dens_pow2_best_north, temp_pow2_best_north = pow2_fitter(mean_dens_north,
+	mean_temp_north)
+
+############################################################
+# REGIONAL SPAGHETTI PLOTS FOR DENS, TEMP, AND RVEL VS TIME
 ############################################################
 
-# Plot of time vs density with all lines
-plt.figure()
-for i in xrange(n_id):
-	plt.plot(time, dens[i], "b-", alpha=0.05)
-plt.plot(time, dens_exp(time, *dens_exp_best), "k--", label="Exponential")
-plt.plot(time, dens_pow(time, *dens_pow_best), "k:", label="Power Law")
-plt.plot(time, dens_pow2(time, *dens_pow2_best), "k-.", label="Power Law 2")
-plt.xscale("log")
-plt.yscale("log")
-plt.legend(loc="lower left")
-plt.title("Densities of Yellow Region Particles vs. Time")
-plt.xlabel("Time (s)")
-plt.ylabel("Density (g/cm$^3$)")
-plt.savefig(PLOT_DIR + "time_vs_dens_lines.png", dpi=150)
-plt.close()
+# Plots of density vs time in each region with fitted trajectories
+for r in xrange(3):
+	tag = ["W", "E", "N"][r]
+	lab = ["West", "East", "North"][r]
+	col = ["red", "yellowgreen", "blue"][r]
+	exp_best = [dens_exp_best_west, dens_exp_best_east, dens_exp_best_north][r]
+	pow_best = [dens_pow_best_west, dens_pow_best_east, dens_pow_best_north][r]
+	pow2_best = [dens_pow2_best_west, dens_pow2_best_east,
+		dens_pow2_best_north][r]
+	plt.figure()
+	for i in xrange(n_id):
+		if region[i] == tag:
+			plt.plot(time, dens[i], color=col, alpha=0.05)
+	plt.plot(time, dens_exp(time, *exp_best), "k--", label="Exponential")
+	plt.plot(time, dens_pow(time, *pow_best), "k:", label="Power Law")
+	plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2")
+	plt.xscale("log")
+	plt.yscale("log")
+	plt.legend()
+	plt.title("Densities of %s Region Particles vs. Time" % (lab))
+	plt.xlabel("Time (s)")
+	plt.ylabel("Density (g/cm$^3$)")
+	plotfile = PLOT_DIR + "time_vs_dens_%s.png" % (lab.lower())
+	plt.savefig(plotfile, dpi=150)
+	plt.close()
 
-# Plot of time vs temperature with all lines
-plt.figure()
-for i in xrange(n_id):
-	plt.plot(time, temp[i], "r-", alpha=0.05)
-plt.plot(time, temp_exp(time, *temp_exp_best), "k--", label="Exponential")
-plt.plot(time, temp_pow(time, *temp_pow_best), "k:", label="Power Law")
-plt.plot(time, temp_pow2(time, *temp_pow2_best), "k-.", label="Power Law 2")
-plt.xscale("log")
-plt.yscale("log")
-plt.legend(loc="lower left")
-plt.title("Temperatures of Yellow Region Particles vs. Time")
-plt.xlabel("Time (s)")
-plt.ylabel("Temperature (K)")
-plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
-plt.close()'''
+# Plots of temperature vs time in each region with fitted trajectories
+for r in xrange(3):
+	tag = ["W", "E", "N"][r]
+	lab = ["West", "East", "North"][r]
+	col = ["red", "yellowgreen", "blue"][r]
+	exp_best = [temp_exp_best_west, temp_exp_best_east, temp_exp_best_north][r]
+	pow_best = [temp_pow_best_west, temp_pow_best_east, temp_pow_best_north][r]
+	pow2_best = [temp_pow2_best_west, temp_pow2_best_east,
+		temp_pow2_best_north][r]
+	plt.figure()
+	for i in xrange(n_id):
+		if region[i] == tag:
+			plt.plot(time, temp[i], color=col, alpha=0.05)
+	plt.plot(time, temp_exp(time, *exp_best), "k--", label="Exponential")
+	plt.plot(time, temp_pow(time, *pow_best), "k:", label="Power Law")
+	plt.plot(time, temp_pow2(time, *pow2_best), "k-.", label="Power Law 2")
+	plt.xscale("log")
+	plt.yscale("log")
+	plt.legend()
+	plt.title("Temperatures of %s Region Particles vs. Time" % (lab))
+	plt.xlabel("Time (s)")
+	plt.ylabel("Temperature (K)")
+	plotfile = PLOT_DIR + "time_vs_temp_%s.png" % (lab.lower())
+	plt.savefig(plotfile, dpi=150)
+	plt.close()
 
-'''############################################################
-# CLEANER PLOTS OF DENS AND TEMP VS TIME WITH SIGMAS
-############################################################
-
-# Plot of time vs density with mean and sigmas
-plt.figure()
-for s in xrange(4):
-	plus = 10.**(np.log10(mean_dens) + s * np.log10(sigma_dens))
-	col = ["black", "darkblue", "blue", "lightblue"][s]
-	sty = ["solid", "dashdot", "dashed", "dotted"][s]
-	lab = ["Mean", "1$\\sigma$", "2$\\sigma$", "3$\\sigma$"][s]
-	plt.plot(time, plus, color=col, linestyle=sty, label=lab)
-	if s > 0:
-		minus = 10.**(np.log10(mean_dens) - s * np.log10(sigma_dens))
-		plt.plot(time, minus, color=col, linestyle=sty)
-plt.xscale("log")
-plt.yscale("log")
-plt.legend(loc="lower left")
-plt.title("Densities of Yellow Region Particles vs. Time")
-plt.xlabel("Time (s)")
-plt.ylabel("Density (g/cm$^3$)")
-plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
-plt.close()
-
-# Plot of time vs temperature with mean and sigmas
-plt.figure()
-for s in xrange(4):
-	plus = 10.**(np.log10(mean_temp) + s * np.log10(sigma_temp))
-	col = ["black", "darkred", "red", "pink"][s]
-	sty = ["solid", "dashdot", "dashed", "dotted"][s]
-	lab = ["Mean", "1$\\sigma$", "2$\\sigma$", "3$\\sigma$"][s]
-	plt.plot(time, plus, color=col, linestyle=sty, label=lab)
-	if s > 0:
-		minus = 10.**(np.log10(mean_temp) - s * np.log10(sigma_temp))
-		plt.plot(time, minus, color=col, linestyle=sty)
-plt.xscale("log")
-plt.yscale("log")
-plt.legend(loc="lower left")
-plt.title("Temperatures of Yellow Region Particles vs. Time")
-plt.xlabel("Time (s)")
-plt.ylabel("Temperatures (K)")
-plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
-plt.close()'''
+# Plots of radial velocity vs time in each region without fitted trajectories
+for r in xrange(3):
+	tag = ["W", "E", "N"][r]
+	lab = ["West", "East", "North"][r]
+	col = ["red", "yellowgreen", "blue"][r]
+	#exp_best = [dens_exp_best_west, dens_exp_best_east, dens_exp_best_north][r]
+	#pow_best = [dens_pow_best_west, dens_pow_best_east, dens_pow_best_north][r]
+	#pow2_best = [dens_pow2_best_west, dens_pow2_best_east,
+	#	dens_pow2_best_north][r]
+	plt.figure()
+	for i in xrange(n_id):
+		if region[i] == tag:
+			plt.plot(time, rvel[i], color=col, alpha=0.05)
+	#plt.plot(time, dens_exp(time, *exp_best), "k--", label="Exponential")
+	#plt.plot(time, dens_pow(time, *pow_best), "k:", label="Power Law")
+	#plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2")
+	plt.xscale("log")
+	plt.yscale("log")
+	#plt.legend()
+	plt.title("Velocities of %s Region Particles vs. Time" % (lab))
+	plt.xlabel("Time (s)")
+	plt.ylabel("Radial Velocity (cm/s)")
+	plotfile = PLOT_DIR + "time_vs_rvel_%s.png" % (lab.lower())
+	plt.savefig(plotfile, dpi=150)
+	plt.close()
 
