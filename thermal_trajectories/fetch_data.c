@@ -1,8 +1,9 @@
 // Read in prepared list files regarding parts of the cco2 SDF files
 // Extract the corresponding thermal trajectory data to new files
 // This data includes times, densities, temperatures, and velocities
+// Also extract isotope evolution for 44Ti and 56Ni from SNSPH network
 
-// Last modified 10/8/18 by Greg Vance
+// Last modified 11/2/18 by Greg Vance
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +19,8 @@
 #define RHO_FILE "rho_fetched.dat"
 #define TEMP_FILE "temp_fetched.dat"
 #define VRAD_FILE "vrad_fetched.dat"
+#define TI44_FILE "ti44_fetched.dat"
+#define NI56_FILE "ni56_fetched.dat"
 
 // Particle struct taken from the cco2 SDF file headers
 typedef struct {
@@ -60,7 +63,7 @@ int main()
 	FILE * listfp, * timefp, * sdfp;
 	char tpos[100], name[500];
 	particle part;
-	float ** rho, ** temp, ** vrad;
+	float ** rho, ** temp, ** vrad, ** ti44, ** ni56;
 	
 	printf("reading input selection files\n");
 	
@@ -76,6 +79,8 @@ int main()
 	rho = alloc_float_2d(n_id, n_sdf);
 	temp = alloc_float_2d(n_id, n_sdf);
 	vrad = alloc_float_2d(n_id, n_sdf);
+	ti44 = alloc_float_2d(n_id, n_sdf);
+	ni56 = alloc_float_2d(n_id, n_sdf);
 	
 	printf("reading data from SDF files\n");
 	
@@ -102,6 +107,8 @@ int main()
 				rho[i][sdf] = part.rho;
 				temp[i][sdf] = part.temp;
 				vrad[i][sdf] = hypot3d(part.vx, part.vy, part.vz);
+				ti44[i][sdf] = part.f12; // f12 is 44Ti (Z, N = 22, 22)
+				ni56[i][sdf] = part.f17; // f17 is 56Ni (Z, N = 28, 28)
 			}
 		}
 		
@@ -116,6 +123,8 @@ int main()
 	write_outfile(RHO_FILE, id, rho, n_id, n_sdf);
 	write_outfile(TEMP_FILE, id, temp, n_id, n_sdf);
 	write_outfile(VRAD_FILE, id, vrad, n_id, n_sdf);
+	write_outfile(TI44_FILE, id, ti44, n_id, n_sdf);
+	write_outfile(NI56_FILE, id, ni56, n_id, n_sdf);
 	
 	printf("cleaning up\n");
 	
@@ -123,6 +132,8 @@ int main()
 	free_float_2d(rho, n_id, n_sdf);
 	free_float_2d(temp, n_id, n_sdf);
 	free_float_2d(vrad, n_id, n_sdf);
+	free_float_2d(ti44, n_id, n_sdf);
+	free_float_2d(ni56, n_id, n_sdf);
 	
 	return 0;
 }
@@ -261,7 +272,7 @@ void free_float_2d(float ** ptr, int rows, int cols)
 	free(ptr);
 }
 
-// Write rho, temp, or vrad data to an output file
+// Write rho, temp, vrad, or other 2d float data to an output file
 void write_outfile(char * name, int * id, float ** dat, int n_id, int n_sdf)
 {
 	FILE * ofp;

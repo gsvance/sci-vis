@@ -11,6 +11,8 @@ thermal_trajectories/sdf_list
 thermal_trajectories/time_fetched.dat
 thermal_trajectories/rho_fetched.dat
 thermal_trajectories/temp_fetched.dat
+thermal_trajectories/ti44_fetched.dat
+thermal_trajectories/ni56_fetched.dat
 
 # Output files from the yellow region trajectories analysis
 thermal_trajectories/yellow_region/pid_list
@@ -29,5 +31,7 @@ thermal_trajectories/entropy_regions/time_fetched.dat
 thermal_trajectories/entropy_regions/rho_fetched.dat
 thermal_trajectories/entropy_regions/temp_fetched.dat
 thermal_trajectories/entropy_regions/vrad_fetched.dat
+thermal_trajectories/entropy_regions/ti44_fetched.dat
+thermal_trajectories/entropy_regions/ni56_fetched.dat
 thermal_trajectories/entropy_regions/images/
 
