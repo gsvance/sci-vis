@@ -5,17 +5,22 @@
 # Create cleaner plots showing the mean and spread of the trajectories
 # Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 10/10/18 by Greg Vance
+# Last modified 11/7/18 by Greg Vance
 
+# Run the various import statements, which can sometimes take a while
+print "starting imports"
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as spop
+print "imports complete"
 
 # Fetched data files for this script to read
 TIME_FILE = "time_fetched.dat"
 RHO_FILE = "rho_fetched.dat"
 TEMP_FILE = "temp_fetched.dat"
 VRAD_FILE = "vrad_fetched.dat"
+TI44_FILE = "ti44_fetched.dat"
+NI56_FILE = "ni56_fetched.dat"
 
 # File with an alternate particle IDs list tagging them by region
 REGIONS_FILE = "regions.out"
@@ -30,6 +35,9 @@ SNSPH_LENGTH = 6.955e10 # cm
 SNSPH_DENSITY = SNSPH_MASS / SNSPH_LENGTH**3
 SNSPH_VELOCITY = SNSPH_LENGTH / SNSPH_TIME
 
+# Alert for start of data read process
+print "beginning to read data files"
+
 # Read the iter and tpos data points from file
 iter = np.loadtxt(TIME_FILE, np.int, usecols=[0])
 tpos = np.loadtxt(TIME_FILE, np.float, usecols=[1])
@@ -41,38 +49,61 @@ n_time = len(tpos)
 # Convert times to seconds
 time = tpos * SNSPH_TIME
 
+# Progress printing
+print "time data read"
+
 # Read the density data from file
 rho_id = np.loadtxt(RHO_FILE, np.int, usecols=[0])
 rho = np.loadtxt(RHO_FILE, np.float, usecols=range(1, n_time + 1))
+print "density data read"
 
 # Read the temperature data from file
 temp_id = np.loadtxt(TEMP_FILE, np.int, usecols=[0])
 temp = np.loadtxt(TEMP_FILE, np.float, usecols=range(1, n_time + 1))
+print "temperature data read"
 
 # Read the radial velocity data from file
 vrad_id = np.loadtxt(VRAD_FILE, np.int, usecols=[0])
 vrad = np.loadtxt(VRAD_FILE, np.float, usecols=range(1, n_time + 1))
+print "radial velocity data read"
+
+# Read the 44Ti abundance data from file
+ti44_id = np.loadtxt(TI44_FILE, np.int, usecols=[0])
+ti44 = np.loadtxt(TI44_FILE, np.float, usecols=range(1, n_time + 1))
+print "44Ti data read"
+
+# Read the 56Ni abundance data from file
+ni56_id = np.loadtxt(NI56_FILE, np.int, usecols=[0])
+ni56 = np.loadtxt(NI56_FILE, np.float, usecols=range(1, n_time + 1))
+print "56Ni data read"
 
 # Read the region-tagged ID list from file
 region_id = np.loadtxt(REGIONS_FILE, np.int, usecols=[0])
 region = np.loadtxt(REGIONS_FILE, "S1", usecols=[1])
+print "region tag data read"
 
 # Sanity checks on the lists of IDs
 assert len(rho_id) == len(temp_id)
 assert len(rho_id) == len(vrad_id)
+assert len(rho_id) == len(ti44_id)
+assert len(rho_id) == len(ni56_id)
 assert len(rho_id) == len(region_id)
 n_id = len(rho_id)
 assert all(rho_id == temp_id)
 assert all(rho_id == vrad_id)
+assert all(rho_id == ti44_id)
+assert all(rho_id == ni56_id)
 assert all(rho_id == region_id)
 id = np.copy(rho_id)
-del rho_id, temp_id, vrad_id, region_id
+del rho_id, temp_id, vrad_id, ti44_id, ni56_id, region_id
 assert len(region) == n_id
 
 # Sanity checks on the rho, temp, and vrad data
 assert rho.shape == (n_id, n_time)
 assert temp.shape == (n_id, n_time)
 assert vrad.shape == (n_id, n_time)
+assert ti44.shape == (n_id, n_time)
+assert ni56.shape == (n_id, n_time)
 
 # Convert densities to g/cm^3
 dens = rho * SNSPH_DENSITY
@@ -81,7 +112,7 @@ dens = rho * SNSPH_DENSITY
 rvel = vrad * SNSPH_VELOCITY
 
 # Print the results of the sanity checks
-print "fetched data read in and sanity-checked"
+print "all data sanity-checked"
 print "number of points in time:", n_time
 print "number of particle ids:", n_id
 
@@ -90,6 +121,7 @@ print "number of particle ids:", n_id
 ############################################################
 
 # Plot of iteration vs density with all lines
+print "plotting dens vs iter spaghetti plot"
 plt.figure()
 labeled = [False, False, False]
 for i in xrange(n_id):
@@ -110,6 +142,7 @@ plt.savefig(PLOT_DIR + "iter_vs_dens_lines.png", dpi=150)
 plt.close()
 
 # Plot of iteration vs temperature with all lines
+print "plotting temp vs iter spaghetti plot"
 plt.figure()
 labeled = [False, False, False]
 for i in xrange(n_id):
@@ -130,6 +163,7 @@ plt.savefig(PLOT_DIR + "iter_vs_temp_lines.png", dpi=150)
 plt.close()
 
 # Plot of iteration vs radial velocity with all lines
+print "plotting vrad vs iter spaghetti plot"
 plt.figure()
 labeled = [False, False, False]
 for i in xrange(n_id):
@@ -154,6 +188,7 @@ plt.close()
 ############################################################
 
 # Plot of time vs density with all lines
+print "plotting dens vs time spaghetti plot"
 plt.figure()
 labeled = [False, False, False]
 for i in xrange(n_id):
@@ -175,6 +210,7 @@ plt.savefig(PLOT_DIR + "time_vs_dens_lines.png", dpi=150)
 plt.close()
 
 # Plot of time vs temperature with all lines
+print "plotting temp vs time spaghetti plot"
 plt.figure()
 labeled = [False, False, False]
 for i in xrange(n_id):
@@ -196,6 +232,7 @@ plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
 plt.close()
 
 # Plot of time vs radial velocity with all lines
+print "plotting vrad vs time spaghetti plot"
 plt.figure()
 labeled = [False, False, False]
 for i in xrange(n_id):
@@ -219,6 +256,9 @@ plt.close()
 ############################################################
 # CALCULATING MEAN AND SPREAD STATISTICS
 ############################################################
+
+# Alert for user
+print "calculating mean and spread stats"
 
 # Mean and std. dev. of density in log space at every time
 mean_dens = 10.**np.mean(np.log10(dens), axis=0)
@@ -279,6 +319,7 @@ sigma_rvel_north = 10.**np.std(np.log10(rvel[north]), axis=0)
 ############################################################
 
 # Plot mean density trajectories of each region with spread
+print "plotting mean densities"
 plt.figure()
 for r in xrange(3):
 	mu = [mean_dens_west, mean_dens_east, mean_dens_north][r]
@@ -299,6 +340,7 @@ plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
 plt.close()
 
 # Plot mean temperature trajectories of each region with spread
+print "plotting mean temperatures"
 plt.figure()
 for r in xrange(3):
 	mu = [mean_temp_west, mean_temp_east, mean_temp_north][r]
@@ -319,6 +361,7 @@ plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
 plt.close()
 
 # Plot mean radial velocity trajectories of each region with spread
+print "plotting mean radial velocities"
 plt.figure()
 for r in xrange(3):
 	mu = [mean_rvel_west, mean_rvel_east, mean_rvel_north][r]
@@ -341,6 +384,9 @@ plt.close()
 ############################################################
 # DEFINING AND FITTING MAGKOTSIOS TRAJECTORIES
 ############################################################
+
+# Progress alert for the user
+print "fitting the magkotsios-inspired trajectories"
 
 # Exponential trajectories from Magkotsios Eq. 2
 def temp_exp(t, T0, tau):
@@ -417,6 +463,7 @@ dens_pow2_best_north, temp_pow2_best_north = pow2_fitter(mean_dens_north,
 ############################################################
 
 # Plots of density vs time in each region with fitted trajectories
+print "plotting densities with fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["West", "East", "North"][r]
@@ -429,12 +476,15 @@ for r in xrange(3):
 	for i in xrange(n_id):
 		if region[i] == tag:
 			plt.plot(time, dens[i], color=col, alpha=0.05)
-	plt.plot(time, dens_exp(time, *exp_best), "k--", label="Exponential")
-	plt.plot(time, dens_pow(time, *pow_best), "k:", label="Power Law")
-	plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2")
+	plt.plot(time, dens_exp(time, *exp_best), "k--", label="Exponential" \
+		+ "\n($\\rho_0$ = %.2e, $\\tau$ = %.2e)" % (exp_best))
+	plt.plot(time, dens_pow(time, *pow_best), "k:", label="Power Law" \
+		+ "\n($\\rho_0$ = %.2e)" % (pow_best))
+	plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2" \
+		+ "\n($\\rho_0$ = %.2e, $\\alpha$ = %.2e)" % (pow2_best))
 	plt.xscale("log")
 	plt.yscale("log")
-	plt.legend()
+	plt.legend(loc="lower left", fontsize=9)#, title="$\\rho_0$ = %.2e g/cc" % (pow_best))
 	plt.title("Densities of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Density (g/cm$^3$)")
@@ -443,6 +493,7 @@ for r in xrange(3):
 	plt.close()
 
 # Plots of temperature vs time in each region with fitted trajectories
+print "plotting temperatures with fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["West", "East", "North"][r]
@@ -455,12 +506,15 @@ for r in xrange(3):
 	for i in xrange(n_id):
 		if region[i] == tag:
 			plt.plot(time, temp[i], color=col, alpha=0.05)
-	plt.plot(time, temp_exp(time, *exp_best), "k--", label="Exponential")
-	plt.plot(time, temp_pow(time, *pow_best), "k:", label="Power Law")
-	plt.plot(time, temp_pow2(time, *pow2_best), "k-.", label="Power Law 2")
+	plt.plot(time, temp_exp(time, *exp_best), "k--", label="Exponential" \
+		+ "\n($T_0$ = %.2e, $\\tau$ = %.2e)" % (exp_best))
+	plt.plot(time, temp_pow(time, *pow_best), "k:", label="Power Law" \
+		+ "\n($T_0$ = %.2e)" % (pow_best))
+	plt.plot(time, temp_pow2(time, *pow2_best), "k-.", label="Power Law 2" \
+		+ "\n($T_0$ = %.2e, $\\alpha$ = %.2e)" % (pow2_best))
 	plt.xscale("log")
 	plt.yscale("log")
-	plt.legend()
+	plt.legend(loc="lower left", fontsize=9)#, title="$T_0$ = %.2e K" % (pow_best))
 	plt.title("Temperatures of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Temperature (K)")
@@ -469,6 +523,7 @@ for r in xrange(3):
 	plt.close()
 
 # Plots of radial velocity vs time in each region without fitted trajectories
+print "plotting radial velocities with fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["West", "East", "North"][r]
