@@ -246,6 +246,7 @@ for i in xrange(n_id):
 		plt.plot(time, rvel[i], color=col, alpha=0.05)
 plt.xscale("log")
 plt.yscale("log")
+plt.xlim(1e0, 1e5)
 plt.legend()
 plt.title("Velocities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
@@ -261,16 +262,24 @@ plt.close()
 print "calculating mean and spread stats"
 
 # Mean and std. dev. of density in log space at every time
-mean_dens = 10.**np.mean(np.log10(dens), axis=0)
-sigma_dens = 10.**np.std(np.log10(dens), axis=0)
+#mean_dens = 10.**np.mean(np.log10(dens), axis=0)
+#sigma_dens = 10.**np.std(np.log10(dens), axis=0)
 
 # Mean and std. dev. of temperature in log space at every time
-mean_temp = 10.**np.mean(np.log10(temp), axis=0)
-sigma_temp = 10.**np.std(np.log10(temp), axis=0)
+#mean_temp = 10.**np.mean(np.log10(temp), axis=0)
+#sigma_temp = 10.**np.std(np.log10(temp), axis=0)
 
 # Mean and std. dev. of radial velocity in log space at every time
-mean_rvel = 10.**np.mean(np.log10(rvel), axis=0)
-sigma_rvel = 10.**np.std(np.log10(rvel), axis=0)
+#mean_rvel = 10.**np.mean(np.log10(rvel), axis=0)
+#sigma_rvel = 10.**np.std(np.log10(rvel), axis=0)
+
+# Mean and std. dev. of 44Ti abundance in log space at every time
+#mean_ti44 = 10.**np.mean(np.log10(ti44), axis=0)
+#sigma_ti44 = 10.**np.std(np.log10(ti44), axis=0)
+
+# Mean and std. dev. of 56Ni abundance in log space at every time
+#mean_ni56 = 10.**np.mean(np.log10(ni56), axis=0)
+#sigma_ni56 = 10.**np.std(np.log10(ni56), axis=0)
 
 # Make boolean arrays for each of the 3 regions and check sanity
 west = (region == "W")
@@ -314,6 +323,30 @@ sigma_rvel_east = 10.**np.std(np.log10(rvel[east]), axis=0)
 mean_rvel_north = 10.**np.mean(np.log10(rvel[north]), axis=0)
 sigma_rvel_north = 10.**np.std(np.log10(rvel[north]), axis=0)
 
+# Calculate 44Ti abundance mean and std. dev. for the west region
+mean_ti44_west = 10.**np.mean(np.log10(ti44[west]), axis=0)
+sigma_ti44_west = 10.**np.std(np.log10(ti44[west]), axis=0)
+
+# Calculate 44Ti abundance mean and std. dev. for the east region
+mean_ti44_east = 10.**np.mean(np.log10(ti44[east]), axis=0)
+sigma_ti44_east = 10.**np.std(np.log10(ti44[east]), axis=0)
+
+# Calculate 44Ti abundance mean and std. dev. for the north region
+mean_ti44_north = 10.**np.mean(np.log10(ti44[north]), axis=0)
+sigma_ti44_north = 10.**np.std(np.log10(ti44[north]), axis=0)
+
+# Calculate 56Ni abundance mean and std. dev. for the west region
+mean_ni56_west = 10.**np.mean(np.log10(ni56[west]), axis=0)
+sigma_ni56_west = 10.**np.std(np.log10(ni56[west]), axis=0)
+
+# Calculate 56Ni abundance mean and std. dev. for the east region
+mean_ni56_east = 10.**np.mean(np.log10(ni56[east]), axis=0)
+sigma_ni56_east = 10.**np.std(np.log10(ni56[east]), axis=0)
+
+# Calculate 56Ni abundance mean and std. dev. for the north region
+mean_ni56_north = 10.**np.mean(np.log10(ni56[north]), axis=0)
+sigma_ni56_north = 10.**np.std(np.log10(ni56[north]), axis=0)
+
 ############################################################
 # PLOTTING MEAN TRAJECTORIES OF EACH REGION WITH SPREADS
 ############################################################
@@ -337,6 +370,10 @@ plt.title("Densities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
+plt.xlim(3e-2, 10.)
+plt.ylim(1e3, 1e7)
+plt.legend(loc="upper right")
+plt.savefig(PLOT_DIR + "time_vs_dens_sigma_zoom.png", dpi=150)
 plt.close()
 
 # Plot mean temperature trajectories of each region with spread
@@ -358,6 +395,10 @@ plt.title("Temperatures of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
+plt.xlim(3e-2, 10.)
+plt.ylim(1e8, 1e10)
+plt.legend(loc="upper right")
+plt.savefig(PLOT_DIR + "time_vs_temp_sigma_zoom.png", dpi=150)
 plt.close()
 
 # Plot mean radial velocity trajectories of each region with spread
@@ -374,11 +415,65 @@ for r in xrange(3):
 	plt.plot(time, mu, color=col, label=lab)
 plt.xscale("log")
 plt.yscale("log")
+plt.xlim(1e0, 1e5)
 plt.legend()
 plt.title("Velocities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_sigma.png", dpi=150)
+plt.xlim(1e0, 10.)
+plt.legend(loc="lower right")
+plt.savefig(PLOT_DIR + "time_vs_rvel_sigma_zoom.png", dpi=150)
+plt.close()
+
+# Plot mean 44Ti abundance trajectories of each region with spread
+print "plotting mean 44Ti abundances"
+plt.figure()
+for r in xrange(3):
+	mu = [mean_ti44_west, mean_ti44_east, mean_ti44_north][r]
+	sig = [sigma_ti44_west, sigma_ti44_east, sigma_ti44_north][r]
+	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "yellowgreen", "blue"][r]
+	plus = 10.**(np.log10(mu) + np.log10(sig))
+	minus = 10.**(np.log10(mu) - np.log10(sig))
+	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
+	plt.plot(time, mu, color=col, label=lab)
+plt.xscale("log")
+plt.yscale("log")
+plt.xlim(1e0, 1e5)
+plt.legend(loc="lower left")
+plt.title("${}^{44}$Ti Abundances of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("${}^{44}$Ti Mass Fraction")
+plt.savefig(PLOT_DIR + "time_vs_ti44_sigma.png", dpi=150)
+plt.xlim(1e0, 10.)
+#plt.legend(loc="lower right")
+plt.savefig(PLOT_DIR + "time_vs_ti44_sigma_zoom.png", dpi=150)
+plt.close()
+
+# Plot mean 56Ni abundance trajectories of each region with spread
+print "plotting mean 56Ni abundances"
+plt.figure()
+for r in xrange(3):
+	mu = [mean_ni56_west, mean_ni56_east, mean_ni56_north][r]
+	sig = [sigma_ni56_west, sigma_ni56_east, sigma_ni56_north][r]
+	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "yellowgreen", "blue"][r]
+	plus = 10.**(np.log10(mu) + np.log10(sig))
+	minus = 10.**(np.log10(mu) - np.log10(sig))
+	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
+	plt.plot(time, mu, color=col, label=lab)
+plt.xscale("log")
+plt.yscale("log")
+plt.xlim(1e0, 1e5)
+plt.legend(loc="lower left")
+plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("${}^{56}$Ni Mass Fraction")
+plt.savefig(PLOT_DIR + "time_vs_ni56_sigma.png", dpi=150)
+plt.xlim(1e0, 10.)
+#plt.legend(loc="lower right")
+plt.savefig(PLOT_DIR + "time_vs_ni56_sigma_zoom.png", dpi=150)
 plt.close()
 
 ############################################################
@@ -463,7 +558,7 @@ dens_pow2_best_north, temp_pow2_best_north = pow2_fitter(mean_dens_north,
 ############################################################
 
 # Plots of density vs time in each region with fitted trajectories
-print "plotting densities with fits"
+print "plotting densities by region with function fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["West", "East", "North"][r]
@@ -493,7 +588,7 @@ for r in xrange(3):
 	plt.close()
 
 # Plots of temperature vs time in each region with fitted trajectories
-print "plotting temperatures with fits"
+print "plotting temperatures by region with function fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["West", "East", "North"][r]
@@ -523,7 +618,7 @@ for r in xrange(3):
 	plt.close()
 
 # Plots of radial velocity vs time in each region without fitted trajectories
-print "plotting radial velocities with fits"
+print "plotting radial velocities by region"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["West", "East", "North"][r]
@@ -541,6 +636,7 @@ for r in xrange(3):
 	#plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2")
 	plt.xscale("log")
 	plt.yscale("log")
+	plt.xlim(1e0, 1e5)
 	#plt.legend()
 	plt.title("Velocities of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
