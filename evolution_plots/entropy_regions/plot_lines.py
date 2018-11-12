@@ -5,7 +5,7 @@
 # Create cleaner plots showing the mean and spread of the trajectories
 # Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 11/8/18 by Greg Vance
+# Last modified 11/12/18 by Greg Vance
 
 # Run the various import statements, which can sometimes take a while
 print "starting imports"
