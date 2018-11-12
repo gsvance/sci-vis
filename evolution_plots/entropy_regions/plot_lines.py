@@ -5,7 +5,7 @@
 # Create cleaner plots showing the mean and spread of the trajectories
 # Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 11/7/18 by Greg Vance
+# Last modified 11/8/18 by Greg Vance
 
 # Run the various import statements, which can sometimes take a while
 print "starting imports"
@@ -27,6 +27,9 @@ REGIONS_FILE = "regions.out"
 
 # Subdirectory to store all plot images
 PLOT_DIR = "images/"
+
+# Subdirectory to store the mean trajectories
+MEAN_DIR = "mean_traj/"
 
 # Units from the SNSPH code
 SNSPH_TIME = 100. # s
@@ -310,6 +313,14 @@ sigma_temp_east = 10.**np.std(np.log10(temp[east]), axis=0)
 # Calculate temperature mean and std. dev. for the north region
 mean_temp_north = 10.**np.mean(np.log10(temp[north]), axis=0)
 sigma_temp_north = 10.**np.std(np.log10(temp[north]), axis=0)
+
+# Write mean density and temperature trajectories to file
+np.savetxt(MEAN_DIR + "time_dens_temp_west.txt", np.column_stack((time,
+	mean_dens_west, mean_temp_west)), header="time dens temp")
+np.savetxt(MEAN_DIR + "time_dens_temp_east.txt", np.column_stack((time,
+	mean_dens_east, mean_temp_east)), header="time dens temp")
+np.savetxt(MEAN_DIR + "time_dens_temp_north.txt", np.column_stack((time,
+	mean_dens_north, mean_temp_north)), header="time dens temp")
 
 # Calculate radial velocity mean and std. dev. for the west region
 mean_rvel_west = 10.**np.mean(np.log10(rvel[west]), axis=0)
