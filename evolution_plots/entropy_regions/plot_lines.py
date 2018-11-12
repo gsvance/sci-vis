@@ -120,7 +120,7 @@ print "number of points in time:", n_time
 print "number of particle ids:", n_id
 
 ############################################################
-# SPAGHETTI PLOTS FOR DENS, TEMP, AND RVEL VS ITER
+# SPAGHETTI PLOTS FOR DENS, TEMP, RVEL, ETC VS ITER
 ############################################################
 
 # Plot of iteration vs density with all lines
@@ -186,8 +186,50 @@ plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "iter_vs_rvel_lines.png", dpi=150)
 plt.close()
 
+# Plot of iteration vs 44Ti abundance with all lines
+print "plotting 44Ti vs iter spaghetti plot"
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(iter, ti44[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(iter, ti44[i], color=col, alpha=0.05)
+plt.yscale("log")
+plt.legend()
+plt.title("${}^{44}$Ti Abundances of 3 Regions of Particles vs. Iteration")
+plt.xlabel("SNSPH Iteration")
+plt.ylabel("${}^{44}$Ti Mass Fraction")
+plt.savefig(PLOT_DIR + "iter_vs_ti44_lines.png", dpi=150)
+plt.close()
+
+# Plot of iteration vs 56Ni abundance with all lines
+print "plotting 56Ni vs iter spaghetti plot"
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(iter, ni56[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(iter, ni56[i], color=col, alpha=0.05)
+plt.yscale("log")
+plt.legend()
+plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Iteration")
+plt.xlabel("SNSPH Iteration")
+plt.ylabel("${}^{56}$Ni Mass Fraction")
+plt.savefig(PLOT_DIR + "iter_vs_ni56_lines.png", dpi=150)
+plt.close()
+
 ############################################################
-# SPAGHETTI PLOTS FOR DENS, TEMP, AND RVEL VS TIME
+# SPAGHETTI PLOTS FOR DENS, TEMP, RVEL, ETC VS TIME
 ############################################################
 
 # Plot of time vs density with all lines
@@ -255,6 +297,52 @@ plt.title("Velocities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_lines.png", dpi=150)
+plt.close()
+
+# Plot of time vs 44Ti abundance with all lines
+print "plotting 44Ti vs time spaghetti plot"
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(time, ti44[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(time, ti44[i], color=col, alpha=0.05)
+plt.xscale("log")
+plt.yscale("log")
+plt.xlim(1e0, 1e5)
+plt.legend()
+plt.title("${}^{44}$Ti Abundance of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("${}^{44}$Ti Mass Fraction")
+plt.savefig(PLOT_DIR + "time_vs_ti44_lines.png", dpi=150)
+plt.close()
+
+# Plot of time vs 56Ni abundance with all lines
+print "plotting 56Ni vs time spaghetti plot"
+plt.figure()
+labeled = [False, False, False]
+for i in xrange(n_id):
+	r = {"W": 0, "E": 1, "N": 2}[region[i]]
+	col = ["red", "yellowgreen", "blue"][r]
+	if not labeled[r]:
+		lab = ["West", "East", "North"][r]
+		plt.plot(time, ni56[i], color=col, label=lab)
+		labeled[r] = True
+	else:
+		plt.plot(time, ni56[i], color=col, alpha=0.05)
+plt.xscale("log")
+plt.yscale("log")
+plt.xlim(1e0, 1e5)
+plt.legend()
+plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Time")
+plt.xlabel("Time (s)")
+plt.ylabel("${}^{56}$Ni Mass Fraction")
+plt.savefig(PLOT_DIR + "time_vs_ni56_lines.png", dpi=150)
 plt.close()
 
 ############################################################
@@ -335,28 +423,40 @@ mean_rvel_north = 10.**np.mean(np.log10(rvel[north]), axis=0)
 sigma_rvel_north = 10.**np.std(np.log10(rvel[north]), axis=0)
 
 # Calculate 44Ti abundance mean and std. dev. for the west region
-mean_ti44_west = 10.**np.mean(np.log10(ti44[west]), axis=0)
-sigma_ti44_west = 10.**np.std(np.log10(ti44[west]), axis=0)
+tmp_log = np.log10(ti44[west])
+tmp_log[np.logical_not(np.isfinite(tmp_log))] = np.nan
+mean_ti44_west = 10.**np.nanmean(tmp_log, axis=0)
+sigma_ti44_west = 10.**np.nanstd(tmp_log, axis=0)
 
 # Calculate 44Ti abundance mean and std. dev. for the east region
-mean_ti44_east = 10.**np.mean(np.log10(ti44[east]), axis=0)
-sigma_ti44_east = 10.**np.std(np.log10(ti44[east]), axis=0)
+tmp_log = np.log10(ti44[east])
+tmp_log[np.logical_not(np.isfinite(tmp_log))] = np.nan
+mean_ti44_east = 10.**np.nanmean(tmp_log, axis=0)
+sigma_ti44_east = 10.**np.nanstd(tmp_log, axis=0)
 
 # Calculate 44Ti abundance mean and std. dev. for the north region
-mean_ti44_north = 10.**np.mean(np.log10(ti44[north]), axis=0)
-sigma_ti44_north = 10.**np.std(np.log10(ti44[north]), axis=0)
+tmp_log = np.log10(ti44[north])
+tmp_log[np.logical_not(np.isfinite(tmp_log))] = np.nan
+mean_ti44_north = 10.**np.nanmean(tmp_log, axis=0)
+sigma_ti44_north = 10.**np.nanstd(tmp_log, axis=0)
 
 # Calculate 56Ni abundance mean and std. dev. for the west region
-mean_ni56_west = 10.**np.mean(np.log10(ni56[west]), axis=0)
-sigma_ni56_west = 10.**np.std(np.log10(ni56[west]), axis=0)
+tmp_log = np.log10(ni56[west])
+tmp_log[np.logical_not(np.isfinite(tmp_log))] = np.nan
+mean_ni56_west = 10.**np.nanmean(tmp_log, axis=0)
+sigma_ni56_west = 10.**np.nanstd(tmp_log, axis=0)
 
 # Calculate 56Ni abundance mean and std. dev. for the east region
-mean_ni56_east = 10.**np.mean(np.log10(ni56[east]), axis=0)
-sigma_ni56_east = 10.**np.std(np.log10(ni56[east]), axis=0)
+tmp_log = np.log10(ni56[east])
+tmp_log[np.logical_not(np.isfinite(tmp_log))] = np.nan
+mean_ni56_east = 10.**np.nanmean(tmp_log, axis=0)
+sigma_ni56_east = 10.**np.nanstd(tmp_log, axis=0)
 
 # Calculate 56Ni abundance mean and std. dev. for the north region
-mean_ni56_north = 10.**np.mean(np.log10(ni56[north]), axis=0)
-sigma_ni56_north = 10.**np.std(np.log10(ni56[north]), axis=0)
+tmp_log = np.log10(ni56[north])
+tmp_log[np.logical_not(np.isfinite(tmp_log))] = np.nan
+mean_ni56_north = 10.**np.nanmean(tmp_log, axis=0)
+sigma_ni56_north = 10.**np.nanstd(tmp_log, axis=0)
 
 ############################################################
 # PLOTTING MEAN TRAJECTORIES OF EACH REGION WITH SPREADS
