@@ -5,7 +5,7 @@
 # Create cleaner plots showing the mean and spread of the trajectories
 # Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 11/12/18 by Greg Vance
+# Last modified 12/11/18 by Greg Vance
 
 # Run the various import statements, which can sometimes take a while
 print "starting imports"
@@ -131,14 +131,14 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(iter, dens[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(iter, dens[i], color=col, alpha=0.05)
 plt.yscale("log")
 plt.legend()
-plt.title("Densities of 3 Regions of Particles vs. Iteration")
+#plt.title("Densities of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "iter_vs_dens_lines.png", dpi=150)
@@ -152,14 +152,14 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(iter, temp[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(iter, temp[i], color=col, alpha=0.05)
 plt.yscale("log")
 plt.legend()
-plt.title("Temperatures of 3 Regions of Particles vs. Iteration")
+#plt.title("Temperatures of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "iter_vs_temp_lines.png", dpi=150)
@@ -173,14 +173,14 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(iter, rvel[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(iter, rvel[i], color=col, alpha=0.05)
 plt.yscale("log")
 plt.legend()
-plt.title("Velocities of 3 Regions of Particles vs. Iteration")
+#plt.title("Velocities of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "iter_vs_rvel_lines.png", dpi=150)
@@ -194,14 +194,14 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(iter, ti44[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(iter, ti44[i], color=col, alpha=0.05)
 plt.yscale("log")
 plt.legend()
-plt.title("${}^{44}$Ti Abundances of 3 Regions of Particles vs. Iteration")
+#plt.title("${}^{44}$Ti Abundances of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("${}^{44}$Ti Mass Fraction")
 plt.savefig(PLOT_DIR + "iter_vs_ti44_lines.png", dpi=150)
@@ -215,14 +215,14 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(iter, ni56[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(iter, ni56[i], color=col, alpha=0.05)
 plt.yscale("log")
 plt.legend()
-plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Iteration")
+#plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("${}^{56}$Ni Mass Fraction")
 plt.savefig(PLOT_DIR + "iter_vs_ni56_lines.png", dpi=150)
@@ -240,15 +240,15 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(time, dens[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(time, dens[i], color=col, alpha=0.05)
-plt.xscale("log")
+plt.xscale("symlog")
 plt.yscale("log")
 plt.legend()
-plt.title("Densities of 3 Regions of Particles vs. Time")
+#plt.title("Densities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_lines.png", dpi=150)
@@ -262,15 +262,15 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(time, temp[i], color=col, label=lab)
 		labeled[r] = True
 	else:
 		plt.plot(time, temp[i], color=col, alpha=0.05)
-plt.xscale("log")
+plt.xscale("symlog")
 plt.yscale("log")
 plt.legend()
-plt.title("Temperatures of 3 Regions of Particles vs. Time")
+#plt.title("Temperatures of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_lines.png", dpi=150)
@@ -284,7 +284,7 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(time, rvel[i], color=col, label=lab)
 		labeled[r] = True
 	else:
@@ -293,7 +293,7 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend()
-plt.title("Velocities of 3 Regions of Particles vs. Time")
+#plt.title("Velocities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_lines.png", dpi=150)
@@ -307,7 +307,7 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(time, ti44[i], color=col, label=lab)
 		labeled[r] = True
 	else:
@@ -316,7 +316,7 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend()
-plt.title("${}^{44}$Ti Abundance of 3 Regions of Particles vs. Time")
+#plt.title("${}^{44}$Ti Abundance of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{44}$Ti Mass Fraction")
 plt.savefig(PLOT_DIR + "time_vs_ti44_lines.png", dpi=150)
@@ -330,7 +330,7 @@ for i in xrange(n_id):
 	r = {"W": 0, "E": 1, "N": 2}[region[i]]
 	col = ["red", "yellowgreen", "blue"][r]
 	if not labeled[r]:
-		lab = ["West", "East", "North"][r]
+		lab = ["Region 1", "Region 3", "Region 2"][r]
 		plt.plot(time, ni56[i], color=col, label=lab)
 		labeled[r] = True
 	else:
@@ -339,7 +339,7 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend()
-plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Time")
+#plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{56}$Ni Mass Fraction")
 plt.savefig(PLOT_DIR + "time_vs_ni56_lines.png", dpi=150)
@@ -466,22 +466,23 @@ sigma_ni56_north = 10.**np.nanstd(tmp_log, axis=0)
 print "plotting mean densities"
 plt.figure()
 for r in xrange(3):
-	mu = [mean_dens_west, mean_dens_east, mean_dens_north][r]
-	sig = [sigma_dens_west, sigma_dens_east, sigma_dens_north][r]
-	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
-	col = ["red", "yellowgreen", "blue"][r]
+	mu = [mean_dens_west, mean_dens_north, mean_dens_east][r]
+	sig = [sigma_dens_west, sigma_dens_north, sigma_dens_east][r]
+	lab = ["Region 1", "Region 2", "Region 3"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "blue", "yellowgreen"][r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
 	plt.plot(time, mu, color=col, label=lab)
-plt.xscale("log")
+plt.xscale("symlog")
 plt.yscale("log")
 plt.legend()
-plt.title("Densities of 3 Regions of Particles vs. Time")
+#plt.title("Densities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
-plt.xlim(3e-2, 10.)
+#plt.xlim(3e-2, 10.)
+plt.xlim(0., 10.)
 plt.ylim(1e3, 1e7)
 plt.legend(loc="upper right")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma_zoom.png", dpi=150)
@@ -491,22 +492,23 @@ plt.close()
 print "plotting mean temperatures"
 plt.figure()
 for r in xrange(3):
-	mu = [mean_temp_west, mean_temp_east, mean_temp_north][r]
-	sig = [sigma_temp_west, sigma_temp_east, sigma_temp_north][r]
-	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
-	col = ["red", "yellowgreen", "blue"][r]
+	mu = [mean_temp_west, mean_temp_north, mean_temp_east][r]
+	sig = [sigma_temp_west, sigma_temp_north, sigma_temp_east][r]
+	lab = ["Region 1", "Region 2", "Region 3"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "blue", "yellowgreen"][r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
 	plt.plot(time, mu, color=col, label=lab)
-plt.xscale("log")
+plt.xscale("symlog")
 plt.yscale("log")
 plt.legend()
-plt.title("Temperatures of 3 Regions of Particles vs. Time")
+#plt.title("Temperatures of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
-plt.xlim(3e-2, 10.)
+#plt.xlim(3e-2, 10.)
+plt.xlim(0., 10.)
 plt.ylim(1e8, 1e10)
 plt.legend(loc="upper right")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma_zoom.png", dpi=150)
@@ -516,10 +518,10 @@ plt.close()
 print "plotting mean radial velocities"
 plt.figure()
 for r in xrange(3):
-	mu = [mean_rvel_west, mean_rvel_east, mean_rvel_north][r]
-	sig = [sigma_rvel_west, sigma_rvel_east, sigma_rvel_north][r]
-	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
-	col = ["red", "yellowgreen", "blue"][r]
+	mu = [mean_rvel_west, mean_rvel_north, mean_rvel_east][r]
+	sig = [sigma_rvel_west, sigma_rvel_north, sigma_rvel_east][r]
+	lab = ["Region 1", "Region 2", "Region 3"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "blue", "yellowgreen"][r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -528,7 +530,7 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend()
-plt.title("Velocities of 3 Regions of Particles vs. Time")
+#plt.title("Velocities of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Radial Velocity (cm/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_sigma.png", dpi=150)
@@ -541,10 +543,10 @@ plt.close()
 print "plotting mean 44Ti abundances"
 plt.figure()
 for r in xrange(3):
-	mu = [mean_ti44_west, mean_ti44_east, mean_ti44_north][r]
-	sig = [sigma_ti44_west, sigma_ti44_east, sigma_ti44_north][r]
-	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
-	col = ["red", "yellowgreen", "blue"][r]
+	mu = [mean_ti44_west, mean_ti44_north, mean_ti44_east][r]
+	sig = [sigma_ti44_west, sigma_ti44_north, sigma_ti44_east][r]
+	lab = ["Region 1", "Region 2", "Region 3"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "blue", "yellowgreen"][r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -553,7 +555,7 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend(loc="lower left")
-plt.title("${}^{44}$Ti Abundances of 3 Regions of Particles vs. Time")
+#plt.title("${}^{44}$Ti Abundances of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{44}$Ti Mass Fraction")
 plt.savefig(PLOT_DIR + "time_vs_ti44_sigma.png", dpi=150)
@@ -566,10 +568,10 @@ plt.close()
 print "plotting mean 56Ni abundances"
 plt.figure()
 for r in xrange(3):
-	mu = [mean_ni56_west, mean_ni56_east, mean_ni56_north][r]
-	sig = [sigma_ni56_west, sigma_ni56_east, sigma_ni56_north][r]
-	lab = ["West", "East", "North"][r] + " $\\pm$ 1$\\sigma$"
-	col = ["red", "yellowgreen", "blue"][r]
+	mu = [mean_ni56_west, mean_ni56_north, mean_ni56_east][r]
+	sig = [sigma_ni56_west, sigma_ni56_north, sigma_ni56_east][r]
+	lab = ["Region 1", "Region 2", "Region 3"][r] + " $\\pm$ 1$\\sigma$"
+	col = ["red", "blue", "yellowgreen"][r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -578,7 +580,7 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend(loc="lower left")
-plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Time")
+#plt.title("${}^{56}$Ni Abundances of 3 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{56}$Ni Mass Fraction")
 plt.savefig(PLOT_DIR + "time_vs_ni56_sigma.png", dpi=150)
@@ -672,7 +674,7 @@ dens_pow2_best_north, temp_pow2_best_north = pow2_fitter(mean_dens_north,
 print "plotting densities by region with function fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
-	lab = ["West", "East", "North"][r]
+	lab = ["Region 1", "Region 3", "Region 2"][r]
 	col = ["red", "yellowgreen", "blue"][r]
 	exp_best = [dens_exp_best_west, dens_exp_best_east, dens_exp_best_north][r]
 	pow_best = [dens_pow_best_west, dens_pow_best_east, dens_pow_best_north][r]
@@ -688,10 +690,10 @@ for r in xrange(3):
 		+ "\n($\\rho_0$ = %.2e)" % (pow_best))
 	plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2" \
 		+ "\n($\\rho_0$ = %.2e, $\\alpha$ = %.2e)" % (pow2_best))
-	plt.xscale("log")
+	plt.xscale("symlog")
 	plt.yscale("log")
 	plt.legend(loc="lower left", fontsize=9)#, title="$\\rho_0$ = %.2e g/cc" % (pow_best))
-	plt.title("Densities of %s Region Particles vs. Time" % (lab))
+	#plt.title("Densities of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Density (g/cm$^3$)")
 	plotfile = PLOT_DIR + "time_vs_dens_%s.png" % (lab.lower())
@@ -702,7 +704,7 @@ for r in xrange(3):
 print "plotting temperatures by region with function fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
-	lab = ["West", "East", "North"][r]
+	lab = ["Region 1", "Region 3", "Region 2"][r]
 	col = ["red", "yellowgreen", "blue"][r]
 	exp_best = [temp_exp_best_west, temp_exp_best_east, temp_exp_best_north][r]
 	pow_best = [temp_pow_best_west, temp_pow_best_east, temp_pow_best_north][r]
@@ -718,10 +720,10 @@ for r in xrange(3):
 		+ "\n($T_0$ = %.2e)" % (pow_best))
 	plt.plot(time, temp_pow2(time, *pow2_best), "k-.", label="Power Law 2" \
 		+ "\n($T_0$ = %.2e, $\\alpha$ = %.2e)" % (pow2_best))
-	plt.xscale("log")
+	plt.xscale("symlog")
 	plt.yscale("log")
 	plt.legend(loc="lower left", fontsize=9)#, title="$T_0$ = %.2e K" % (pow_best))
-	plt.title("Temperatures of %s Region Particles vs. Time" % (lab))
+	#plt.title("Temperatures of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Temperature (K)")
 	plotfile = PLOT_DIR + "time_vs_temp_%s.png" % (lab.lower())
@@ -732,7 +734,7 @@ for r in xrange(3):
 print "plotting radial velocities by region"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
-	lab = ["West", "East", "North"][r]
+	lab = ["Region 1", "Region 3", "Region 2"][r]
 	col = ["red", "yellowgreen", "blue"][r]
 	#exp_best = [dens_exp_best_west, dens_exp_best_east, dens_exp_best_north][r]
 	#pow_best = [dens_pow_best_west, dens_pow_best_east, dens_pow_best_north][r]
@@ -749,7 +751,7 @@ for r in xrange(3):
 	plt.yscale("log")
 	plt.xlim(1e0, 1e5)
 	#plt.legend()
-	plt.title("Velocities of %s Region Particles vs. Time" % (lab))
+	#plt.title("Velocities of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Radial Velocity (cm/s)")
 	plotfile = PLOT_DIR + "time_vs_rvel_%s.png" % (lab.lower())
