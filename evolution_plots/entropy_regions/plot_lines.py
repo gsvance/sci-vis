@@ -675,6 +675,7 @@ print "plotting densities by region with function fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["Region 1", "Region 3", "Region 2"][r]
+	plab = ["west", "east", "north"][r]
 	col = ["red", "yellowgreen", "blue"][r]
 	exp_best = [dens_exp_best_west, dens_exp_best_east, dens_exp_best_north][r]
 	pow_best = [dens_pow_best_west, dens_pow_best_east, dens_pow_best_north][r]
@@ -696,7 +697,7 @@ for r in xrange(3):
 	#plt.title("Densities of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Density (g/cm$^3$)")
-	plotfile = PLOT_DIR + "time_vs_dens_%s.png" % (lab.lower())
+	plotfile = PLOT_DIR + "time_vs_dens_%s.png" % (plab)
 	plt.savefig(plotfile, dpi=150)
 	plt.close()
 
@@ -705,6 +706,7 @@ print "plotting temperatures by region with function fits"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["Region 1", "Region 3", "Region 2"][r]
+	plab = ["west", "east", "north"][r]
 	col = ["red", "yellowgreen", "blue"][r]
 	exp_best = [temp_exp_best_west, temp_exp_best_east, temp_exp_best_north][r]
 	pow_best = [temp_pow_best_west, temp_pow_best_east, temp_pow_best_north][r]
@@ -726,7 +728,7 @@ for r in xrange(3):
 	#plt.title("Temperatures of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Temperature (K)")
-	plotfile = PLOT_DIR + "time_vs_temp_%s.png" % (lab.lower())
+	plotfile = PLOT_DIR + "time_vs_temp_%s.png" % (plab)
 	plt.savefig(plotfile, dpi=150)
 	plt.close()
 
@@ -735,6 +737,7 @@ print "plotting radial velocities by region"
 for r in xrange(3):
 	tag = ["W", "E", "N"][r]
 	lab = ["Region 1", "Region 3", "Region 2"][r]
+	plab = ["west", "east", "north"][r]
 	col = ["red", "yellowgreen", "blue"][r]
 	#exp_best = [dens_exp_best_west, dens_exp_best_east, dens_exp_best_north][r]
 	#pow_best = [dens_pow_best_west, dens_pow_best_east, dens_pow_best_north][r]
@@ -754,7 +757,7 @@ for r in xrange(3):
 	#plt.title("Velocities of %s Region Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
 	plt.ylabel("Radial Velocity (cm/s)")
-	plotfile = PLOT_DIR + "time_vs_rvel_%s.png" % (lab.lower())
+	plotfile = PLOT_DIR + "time_vs_rvel_%s.png" % (plab)
 	plt.savefig(plotfile, dpi=150)
 	plt.close()
 
