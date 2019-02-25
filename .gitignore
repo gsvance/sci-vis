@@ -36,3 +36,9 @@ evolution_plots/entropy_regions/ni56_fetched.dat
 evolution_plots/entropy_regions/images/
 evolution_plots/entropy_regions/mean_traj/
 
+# Reproduceable files for shock breakout data fetching
+shock_breakout/sdf_list
+shock_breakout/get_sdf_data
+shock_breakout/data_from_sdfs/
+shock_breakout/radial_profiles/
+
