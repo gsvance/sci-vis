@@ -4,7 +4,7 @@
 # Read the SDF data retrieved by the program get_sdf_data.c
 # Make a series of radial plots for studying cco2 the shock breakout
 
-# Last modified 2/25/19 by Greg Vance
+# Last modified 2/26/19 by Greg Vance
 
 # Import packagess (these can take time on saguaro...)
 print "starting imports"
@@ -32,9 +32,8 @@ MSUN = 1.9889e33 # g
 ASTU = 1.495978707e13 # cm
 KMPS = 1e5 # cm/s
 
-rmin, rmax = 8.0, 13.0
-vmin, vmax = 6.0, 8.0
-dmin, dmax = -5.0, 2.0
+# Iteration where shock breakout occurs -- make a nicer plot
+BREAKOUT_ITER = 18400
 
 print "beginning to read data files"
 data_file_list = sorted(os.listdir(DATA_DIR))
@@ -67,22 +66,9 @@ for i, data_file_name in enumerate(data_file_list):
 	
 	# Convert the CGS data to units convenient for the plot axes
 	rad = np.log10(rad)
-	vrad = np.log10(vrad)
+	vrad /= 1e3 * KMPS
 	rho = np.log10(rho)
 	mass /= MSUN
-	
-	if min(rad) < rmin:
-		rmin = min(rad)
-	if max(rad) > rmax:
-		rmax = max(rad)
-	if min(vrad) < vmin:
-		vmin = min(vrad)
-	if max(vrad) > vmax:
-		vmax = max(vrad)
-	if min(rho) < dmin:
-		dmin = min(rho)
-	if max(rho) > dmax:
-		dmax = max(rho)
 	
 	# Set up a big figure to plot two radial profiles together
 	# The figsize here is twice the height of the MPL default
@@ -90,18 +76,20 @@ for i, data_file_name in enumerate(data_file_list):
 	
 	# Upper subplot of vr vs r
 	plt.subplot(211)
-	plt.hist2d(rad, vrad, 100, weights=mass, norm=clr.LogNorm(1e-6, 1e0))
+	plt.hist2d(rad, vrad, 100, ((6.5, 14.0), (-40.0, 55.0)), weights=mass,
+		norm=clr.LogNorm(10.0**-5.5, 10.0**0.5))
 	plt.xlim(6.5, 14.0)
-	plt.ylim(3.5, 10.0)
+	plt.ylim(-40.0, 55.0)
 	plt.xlabel("log Radius [cm]")
-	plt.ylabel("log Radial Velocity [cm/s]")
+	plt.ylabel("Radial Velocity (10$^3$ km/s)")
 	plt.colorbar(label="Total Bin Mass (M$_\\odot$)")
 	plt.title("Radial Profiles for Simulation cco2\n" +
 		"Iteration %d (t = %g sec)" % (iter, tpos))
 	
 	# Lower subplot of rho vs r
 	plt.subplot(212)
-	plt.hist2d(rad, rho, 100, weights=mass, norm=clr.LogNorm(1e-6, 1e0))
+	plt.hist2d(rad, rho, 100, ((6.5, 14.0), (-10.5, 7.0)), weights=mass,
+		norm=clr.LogNorm(10.0**-5.5, 10.0**0.5))
 	plt.xlim(6.5, 14.0)
 	plt.ylim(-10.5, 7.0)
 	plt.xlabel("log Radius [cm]")
@@ -110,8 +98,26 @@ for i, data_file_name in enumerate(data_file_list):
 	
 	plt.savefig(PLOT_DIR + "profile_iter%06d.png" % (iter), dpi=120)
 	plt.close()
-
-print "rad", rmin, rmax
-print "vrad", vmin, vmax
-print "rho", dmin, dmax
+	
+	# Make some nicer plots at the shock breakout point
+	if iter == BREAKOUT_ITER:
+		print "data file %d matches breakout iter" % (i + 1)
+		
+		plt.figure(figsize=(6.4, 9.6))
+		
+		plt.subplot(211)
+		plt.hist2d(rad, vrad, 100, weights=mass, norm=clr.LogNorm())
+		plt.xlabel("log Radius [cm]")
+		plt.ylabel("Radial Velocity (10$^3$ km/s)")
+		plt.colorbar(label="Total Bin Mass (M$_\\odot$)")
+		plt.title("Radial Profiles for Simulation cco2\nat Shock Breakout")
+		
+		plt.subplot(212)
+		plt.hist2d(rad, rho, 100, weights=mass, norm=clr.LogNorm())
+		plt.xlabel("log Radius [cm]")
+		plt.ylabel("log Density [g/cm$^3$]")
+		plt.colorbar(label="Total Bin Mass (M$_\\odot$)")
+		
+		plt.savefig(PLOT_DIR + "profile_breakout.png", dpi=120)
+		plt.close()
 
