@@ -52,7 +52,7 @@ int main()
 	FILE * listfp, * sdfp, * outfp;
 	char tpos[100], sdf_name[500], out_name[500];
 	particle part;
-	float rad, vrad, rho, mass;
+	float x, y, z, vx, vy, vz, rad, vrad, rho, mass;
 	
 	// Open list file and read its header to prepare for iteration
 	listfp = fopen(INPUT_LIST, "r");
@@ -79,8 +79,15 @@ int main()
 		{
 			fread(&part, sizeof(particle), 1, sdfp);
 			
-			rad = hypot3d(part.x, part.y, part.z);
-			vrad = hypot3d(part.vx, part.vy, part.vz);
+			x = part.x;
+			y = part.y;
+			z = part.z;
+			vx = part.vx;
+			vy = part.vy;
+			vz = part.vz;
+			
+			rad = hypot3d(x, y, z);
+			vrad = vx * (x / rad) + vy * (y / rad) + vz * (z / rad);
 			rho = part.rho;
 			mass = part.mass;
 			
