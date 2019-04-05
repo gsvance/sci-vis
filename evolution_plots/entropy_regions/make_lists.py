@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
-# The cco2 histogram of Fe/Ti vs radiation entropy displays 3 distinct regions:
-#  - West region: bright blob with a few red bins at log(S_rad) ~ 22.5
-#  - East region: extended shape with many bright bins at log(S_rad) ~ 22.6
-#  - North region: small bright patch of bins up at log(Fe/Ti) ~ 3.5
-# Save a list of particle IDs for everything within these 3 regions
+# The cco2 histogram of Fe/Ti vs radiation entropy displays 4 distinct regions:
+#  - Region 1: bright yellow blob appearing at log(S_rad) ~ 22.5
+#  - Region 2: smeared patch of reddish bins up at log(Fe/Ti) ~ 3.5
+#  - Region 3: crescent shape with bright yellow bins at log(S_rad) ~ 22.6
+#  - Region 4: extended region of high-entropy particles at log(S_rad) ~ 23.1
+# Save a list of particle IDs for everything within these 4 regions
 # Save a list of all the cco2 SDF files in order with tpos values
 # These lists will be read by fetch_data.c when it does its job next
 # Also write a file listing particle IDs by region for the plots later
 
-# Last modified 9/28/18 by Greg Vance
+# Last modified 4/5/19 by Greg Vance
 
 import numpy as np
 import os
@@ -29,18 +30,22 @@ SDF_DIR = "/home/gsvance/supernova_data/cco2/cco2/"
 
 # Approximate boundaries of the regions from an interactive MPL session
 # See young/shared_files/casA_plots/hist_fe_ti_vs_rad_ent.png
-WEST_SR_MIN = 10.**22.47 # K^3 cm^3 g^-1
-WEST_SR_MAX = 10.**22.56 # K^3 cm^3 g^-1
-WEST_FETI_MIN = 10.**2.4
-WEST_FETI_MAX = 10.**2.8
-EAST_SR_MIN = 10.**22.56 # K^3 cm^3 g^-1
-EAST_SR_MAX = 10.**22.69 # K^3 cm^3 g^-1
-EAST_FETI_MIN = 10.**2.2
-EAST_FETI_MAX = 10.**2.8
-NORTH_SR_MIN = 10.**22.54 # K^3 cm^3 g^-1
-NORTH_SR_MAX = 10.**22.62 # K^3 cm^3 g^-1
-NORTH_FETI_MIN = 10.**3.5
-NORTH_FETI_MAX = 10.**3.8
+REG1_SRAD_MIN = 10.**22.47 # K^3 cm^3 g^-1
+REG1_SRAD_MAX = 10.**22.55 # K^3 cm^3 g^-1
+REG1_FETI_MIN = 10.**2.4
+REG1_FETI_MAX = 10.**2.7
+REG2_SRAD_MIN = 10.**22.55 # K^3 cm^3 g^-1
+REG2_SRAD_MAX = 10.**22.63 # K^3 cm^3 g^-1
+REG2_FETI_MIN = 10.**3.5
+REG2_FETI_MAX = 10.**4.1
+REG3_SRAD_MIN = 10.**22.56 # K^3 cm^3 g^-1
+REG3_SRAD_MAX = 10.**22.70 # K^3 cm^3 g^-1
+REG3_FETI_MIN = 10.**2.2
+REG3_FETI_MAX = 10.**2.8
+REG4_SRAD_MIN = 10.**23.02 # K^3 cm^3 g^-1
+REG4_SRAD_MAX = 10.**23.16 # K^3 cm^3 g^-1
+REG4_FETI_MIN = 10.**0.9
+REG4_FETI_MAX = 10.**4.1
 
 # Read columns file and extract indicies of relevant columns
 with open(COLS_FILE, "r") as cols_file:
@@ -67,24 +72,28 @@ usable = np.isfinite(feti) & (feti != 0.)
 pid, feti, srad = pid[usable], feti[usable], srad[usable]
 
 # Make a list of the particle ID for every particle in each region
-west_pids, east_pids, north_pids = [], [], []
+reg1_pids, reg2_pids, reg3_pids, reg4_pids = [], [], [], []
 for i in xrange(pid.size):
-	if WEST_SR_MIN < srad[i] < WEST_SR_MAX \
-		and WEST_FETI_MIN < feti[i] < WEST_FETI_MAX:
-		west_pids.append(pid[i])
-	elif EAST_SR_MIN < srad[i] < EAST_SR_MAX \
-		and EAST_FETI_MIN < feti[i] < EAST_FETI_MAX:
-		east_pids.append(pid[i])
-	elif NORTH_SR_MIN < srad[i] < NORTH_SR_MAX \
-		and NORTH_FETI_MIN < feti[i] < NORTH_FETI_MAX:
-		north_pids.append(pid[i])
+	if REG1_SRAD_MIN < srad[i] < REG1_SRAD_MAX \
+		and REG1_FETI_MIN < feti[i] < REG1_FETI_MAX:
+		reg1_pids.append(pid[i])
+	elif REG2_SRAD_MIN < srad[i] < REG2_SRAD_MAX \
+		and REG2_FETI_MIN < feti[i] < REG2_FETI_MAX:
+		reg2_pids.append(pid[i])
+	elif REG3_SRAD_MIN < srad[i] < REG3_SRAD_MAX \
+		and REG3_FETI_MIN < feti[i] < REG3_FETI_MAX:
+		reg3_pids.append(pid[i])
+	elif REG4_SRAD_MIN < srad[i] < REG4_SRAD_MAX \
+		and REG4_FETI_MIN < feti[i] < REG4_FETI_MAX:
+		reg4_pids.append(pid[i])
 all_pids = []
-all_pids.extend([(wpid, "W") for wpid in west_pids])
-all_pids.extend([(epid, "E") for epid in east_pids])
-all_pids.extend([(npid, "N") for npid in north_pids])
+all_pids.extend([(pid1, "R1") for pid1 in reg1_pids])
+all_pids.extend([(pid2, "R2") for pid2 in reg2_pids])
+all_pids.extend([(pid3, "R3") for pid3 in reg3_pids])
+all_pids.extend([(pid4, "R4") for pid4 in reg4_pids])
 all_pids.sort(key=lambda x: x[0])
 
-# Write out the list of particle IDs from all 3 regions
+# Write out the list of particle IDs from all 4 regions
 with open(PID_FILE, "w") as pid_file:
 	head = "n_id %d\n" % (len(all_pids))
 	pid_file.write(head)
