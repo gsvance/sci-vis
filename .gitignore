@@ -23,18 +23,18 @@ evolution_plots/yellow_region/temp_fetched.dat
 evolution_plots/yellow_region/vrad_fetched.dat
 evolution_plots/yellow_region/images/
 
-# Output files from the entropy regions trajectories analysis
-evolution_plots/entropy_regions/pid_list
-evolution_plots/entropy_regions/sdf_list
-evolution_plots/entropy_regions/regions.out
-evolution_plots/entropy_regions/time_fetched.dat
-evolution_plots/entropy_regions/rho_fetched.dat
-evolution_plots/entropy_regions/temp_fetched.dat
-evolution_plots/entropy_regions/vrad_fetched.dat
-evolution_plots/entropy_regions/ti44_fetched.dat
-evolution_plots/entropy_regions/ni56_fetched.dat
-evolution_plots/entropy_regions/images/
-evolution_plots/entropy_regions/mean_traj/
+# Output files from the Cas A regions trajectories analysis
+evolution_plots/casA_regions/pid_list
+evolution_plots/casA_regions/sdf_list
+evolution_plots/casA_regions/regions.out
+evolution_plots/casA_regions/time_fetched.dat
+evolution_plots/casA_regions/rho_fetched.dat
+evolution_plots/casA_regions/temp_fetched.dat
+evolution_plots/casA_regions/vrad_fetched.dat
+evolution_plots/casA_regions/ti44_fetched.dat
+evolution_plots/casA_regions/ni56_fetched.dat
+evolution_plots/casA_regions/images/
+evolution_plots/casA_regions/mean_traj/
 
 # Reproduceable files for shock breakout data fetching
 shock_breakout/sdf_list
