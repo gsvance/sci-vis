@@ -38,6 +38,10 @@ SNSPH_LENGTH = 6.955e10 # cm
 SNSPH_DENSITY = SNSPH_MASS / SNSPH_LENGTH**3
 SNSPH_VELOCITY = SNSPH_LENGTH / SNSPH_TIME
 
+# Standardized colors for plotting the lines associated with each region
+# [Region 1, Region 2, Region 3, Region 4]
+COLORS = ["yellow", "blue", "red", "green"]
+
 # Alert for start of data read process
 print "beginning to read data files"
 
@@ -129,7 +133,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(iter, dens[i], color=col, label=lab)
@@ -150,7 +154,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(iter, temp[i], color=col, label=lab)
@@ -171,7 +175,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(iter, rvel[i], color=col, label=lab)
@@ -192,7 +196,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(iter, ti44[i], color=col, label=lab)
@@ -213,7 +217,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(iter, ni56[i], color=col, label=lab)
@@ -238,7 +242,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(time, dens[i], color=col, label=lab)
@@ -260,7 +264,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(time, temp[i], color=col, label=lab)
@@ -282,7 +286,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(time, rvel[i], color=col, label=lab)
@@ -305,7 +309,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(time, ti44[i], color=col, label=lab)
@@ -328,7 +332,7 @@ plt.figure()
 labeled = [False, False, False, False]
 for i in xrange(n_id):
 	r = ["R1", "R2", "R3", "R4"].index(region[i])
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
 		plt.plot(time, ni56[i], color=col, label=lab)
@@ -432,7 +436,7 @@ for r in range(4):
 	mu = mean_dens[r]
 	sig = sigma_dens[r]
 	lab = "Region %d $\\pm$ 1$\\sigma$" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -458,7 +462,7 @@ for r in range(4):
 	mu = mean_temp[r]
 	sig = sigma_temp[r]
 	lab = "Region %d $\\pm$ 1$\\sigma$" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -484,7 +488,7 @@ for r in range(4):
 	mu = mean_rvel[r]
 	sig = sigma_rvel[r]
 	lab = "Region %d $\\pm$ 1$\\sigma$" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -509,7 +513,7 @@ for r in range(4):
 	mu = mean_ti44[r]
 	sig = sigma_ti44[r]
 	lab = "Region %d $\\pm$ 1$\\sigma$" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -534,7 +538,7 @@ for r in range(4):
 	mu = mean_ni56[r]
 	sig = sigma_ni56[r]
 	lab = "Region %d $\\pm$ 1$\\sigma$" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	plus = 10.**(np.log10(mu) + np.log10(sig))
 	minus = 10.**(np.log10(mu) - np.log10(sig))
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
@@ -635,7 +639,7 @@ for r in range(4):
 	tag = "R%d" % (r + 1)
 	lab = "Region %d" % (r + 1)
 	plab = "reg%d" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	exp_best = dens_exp_best[r]
 	pow_best = dens_pow_best[r]
 	pow2_best = dens_pow2_best[r]
@@ -665,7 +669,7 @@ for r in range(4):
 	tag = "R%d" % (r + 1)
 	lab = "Region %d" % (r + 1)
 	plab = "reg%d" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	exp_best = temp_exp_best[r]
 	pow_best = temp_pow_best[r]
 	pow2_best = temp_pow2_best[r]
@@ -695,7 +699,7 @@ for r in range(4):
 	tag = "R%d" % (r + 1)
 	lab = "Region %d" % (r + 1)
 	plab = "reg%d" % (r + 1)
-	col = ["yellowgreen", "blue", "red", "green"][r]
+	col = COLORS[r]
 	#exp_best = dens_exp_best[r]
 	#pow_best = dens_pow_best[r]
 	#pow2_best = dens_pow2_best[r]
