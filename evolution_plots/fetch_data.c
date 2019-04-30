@@ -3,7 +3,7 @@
 // This data includes times, densities, temperatures, and velocities
 // Also extract isotope evolution for 44Ti and 56Ni from SNSPH network
 
-// Last modified 11/2/18 by Greg Vance
+// Last modified 4/30/19 by Greg Vance
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,6 +64,7 @@ int main()
 	char tpos[100], name[500];
 	particle part;
 	float ** rho, ** temp, ** vrad, ** ti44, ** ni56;
+	float x, y, z, vx, vy, vz, rad;
 	
 	printf("reading input selection files\n");
 	
@@ -104,9 +105,19 @@ int main()
 			
 			if ((i = find_index(part.ident, id, n_id)) != -1)
 			{
+				x = part.x;
+				y = part.y;
+				z = part.z;
+				vx = part.vx;
+				vy = part.vy;
+				vz = part.vz;
+				
+				rad = hypot3d(x, y, z);
+				
 				rho[i][sdf] = part.rho;
 				temp[i][sdf] = part.temp;
-				vrad[i][sdf] = hypot3d(part.vx, part.vy, part.vz);
+				// CORRECTED VRAD HERE
+				vrad[i][sdf] = vx * (x/rad) + vy * (y/rad) + vz * (z/rad);
 				ti44[i][sdf] = part.f12; // f12 is 44Ti (Z, N = 22, 22)
 				ni56[i][sdf] = part.f17; // f17 is 56Ni (Z, N = 28, 28)
 			}

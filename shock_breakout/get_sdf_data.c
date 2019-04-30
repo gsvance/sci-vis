@@ -87,6 +87,7 @@ int main()
 			vz = part.vz;
 			
 			rad = hypot3d(x, y, z);
+			// CORRECTED VRAD HERE
 			vrad = vx * (x / rad) + vy * (y / rad) + vz * (z / rad);
 			rho = part.rho;
 			mass = part.mass;

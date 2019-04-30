@@ -11,6 +11,7 @@ evolution_plots/sdf_list
 evolution_plots/time_fetched.dat
 evolution_plots/rho_fetched.dat
 evolution_plots/temp_fetched.dat
+evolution_plots/vrad_fetched.dat
 evolution_plots/ti44_fetched.dat
 evolution_plots/ni56_fetched.dat
 
