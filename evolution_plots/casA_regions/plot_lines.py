@@ -5,7 +5,7 @@
 # Create cleaner plots showing the mean and spread of the trajectories
 # Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 4/12/19 by Greg Vance
+# Last modified 4/30/19 by Greg Vance
 
 # Run the various import statements, which can sometimes take a while
 print "starting imports"
@@ -41,6 +41,12 @@ SNSPH_VELOCITY = SNSPH_LENGTH / SNSPH_TIME
 # Standardized colors for plotting the lines associated with each region
 # [Region 1, Region 2, Region 3, Region 4]
 COLORS = ["yellow", "blue", "red", "green"]
+
+# Standards for the x-axis ticks on all the "sigma zoom" plots
+XTICK_FLOATS = [0, 0.5, 1, 2, 3, 5, 7, 10]
+XTICK_LABELS = [str(tick) for tick in XTICK_FLOATS]
+XTICK_FLOATS_SHORT = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+XTICK_LABELS_SHORT = [str(tick) for tick in XTICK_FLOATS_SHORT]
 
 # Alert for start of data read process
 print "beginning to read data files"
@@ -178,15 +184,15 @@ for i in xrange(n_id):
 	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
-		plt.plot(iter, rvel[i], color=col, label=lab)
+		plt.plot(iter, rvel[i]/1e8, color=col, label=lab)
 		labeled[r] = True
 	else:
-		plt.plot(iter, rvel[i], color=col, alpha=0.05)
-plt.yscale("log")
+		plt.plot(iter, rvel[i]/1e8, color=col, alpha=0.05)
+#plt.yscale("log")
 plt.legend()
 #plt.title("Velocities of 4 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
-plt.ylabel("Radial Velocity (cm/s)")
+plt.ylabel("Radial Velocity (10$^3$ km/s)")
 plt.savefig(PLOT_DIR + "iter_vs_rvel_lines.png", dpi=150)
 plt.close()
 
@@ -204,7 +210,7 @@ for i in xrange(n_id):
 	else:
 		plt.plot(iter, ti44[i], color=col, alpha=0.05)
 plt.yscale("log")
-plt.legend()
+plt.legend(loc="lower right")
 #plt.title("${}^{44}$Ti Abundances of 4 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("${}^{44}$Ti Mass Fraction")
@@ -225,7 +231,7 @@ for i in xrange(n_id):
 	else:
 		plt.plot(iter, ni56[i], color=col, alpha=0.05)
 plt.yscale("log")
-plt.legend()
+plt.legend(loc="lower right")
 #plt.title("${}^{56}$Ni Abundances of 4 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
 plt.ylabel("${}^{56}$Ni Mass Fraction")
@@ -289,17 +295,17 @@ for i in xrange(n_id):
 	col = COLORS[r]
 	if not labeled[r]:
 		lab = "Region %d" % (r + 1)
-		plt.plot(time, rvel[i], color=col, label=lab)
+		plt.plot(time, rvel[i]/1e8, color=col, label=lab)
 		labeled[r] = True
 	else:
-		plt.plot(time, rvel[i], color=col, alpha=0.05)
+		plt.plot(time, rvel[i]/1e8, color=col, alpha=0.05)
 plt.xscale("log")
-plt.yscale("log")
+#plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend()
 #plt.title("Velocities of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Radial Velocity (cm/s)")
+plt.ylabel("Radial Velocity (10$^3$ km/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_lines.png", dpi=150)
 plt.close()
 
@@ -319,7 +325,7 @@ for i in xrange(n_id):
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
-plt.legend()
+plt.legend(loc="lower right")
 #plt.title("${}^{44}$Ti Abundance of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{44}$Ti Mass Fraction")
@@ -342,7 +348,7 @@ for i in xrange(n_id):
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
-plt.legend()
+plt.legend(loc="lower right")
 #plt.title("${}^{56}$Ni Abundances of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{56}$Ni Mass Fraction")
@@ -401,11 +407,12 @@ for r in range(4):
 		header="time dens temp")
 
 # Calculate radial velocity mean and std. dev. for all 4 regions
+# For radial velocity, don't do these calculations in log space
 mean_rvel, sigma_rvel = [], []
 for r in range(4):
 	reg = region_bool[r]
-	mean_rvel.append(10.**np.mean(np.log10(rvel[reg]), axis=0))
-	sigma_rvel.append(10.**np.std(np.log10(rvel[reg]), axis=0))
+	mean_rvel.append(np.mean(rvel[reg], axis=0))
+	sigma_rvel.append(np.std(rvel[reg], axis=0))
 
 # Calculate 44Ti abundance mean and std. dev. for all 4 regions
 mean_ti44, sigma_ti44 = [], []
@@ -450,6 +457,7 @@ plt.ylabel("Density (g/cm$^3$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
 #plt.xlim(3e-2, 10.)
 plt.xlim(0., 10.)
+plt.xticks(XTICK_FLOATS, XTICK_LABELS)
 plt.ylim(1e3, 1e7)
 plt.legend(loc="upper right")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma_zoom.png", dpi=150)
@@ -476,7 +484,8 @@ plt.ylabel("Temperature (K)")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma.png", dpi=150)
 #plt.xlim(3e-2, 10.)
 plt.xlim(0., 10.)
-plt.ylim(1e8, 1e10)
+plt.xticks(XTICK_FLOATS, XTICK_LABELS)
+plt.ylim(3e8, 1e10)
 plt.legend(loc="upper right")
 plt.savefig(PLOT_DIR + "time_vs_temp_sigma_zoom.png", dpi=150)
 plt.close()
@@ -485,24 +494,25 @@ plt.close()
 print "plotting mean radial velocities"
 plt.figure()
 for r in range(4):
-	mu = mean_rvel[r]
-	sig = sigma_rvel[r]
+	mu = mean_rvel[r]/1e8
+	sig = sigma_rvel[r]/1e8
 	lab = "Region %d $\\pm$ 1$\\sigma$" % (r + 1)
 	col = COLORS[r]
-	plus = 10.**(np.log10(mu) + np.log10(sig))
-	minus = 10.**(np.log10(mu) - np.log10(sig))
+	plus = mu + sig
+	minus = mu - sig
 	plt.fill_between(time, plus, minus, color=col, alpha=0.2)
 	plt.plot(time, mu, color=col, label=lab)
 plt.xscale("log")
-plt.yscale("log")
+#plt.yscale("log")
 plt.xlim(1e0, 1e5)
 plt.legend()
 #plt.title("Velocities of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Radial Velocity (cm/s)")
+plt.ylabel("Radial Velocity (10$^3$ km/s)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_sigma.png", dpi=150)
 plt.xlim(1e0, 10.)
-plt.legend(loc="lower right")
+plt.xticks(XTICK_FLOATS_SHORT, XTICK_LABELS_SHORT)
+plt.legend(loc="upper left")
 plt.savefig(PLOT_DIR + "time_vs_rvel_sigma_zoom.png", dpi=150)
 plt.close()
 
@@ -521,13 +531,14 @@ for r in range(4):
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
-plt.legend(loc="lower left")
+plt.legend(loc="lower right")
 #plt.title("${}^{44}$Ti Abundances of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{44}$Ti Mass Fraction")
 plt.savefig(PLOT_DIR + "time_vs_ti44_sigma.png", dpi=150)
 plt.xlim(1e0, 10.)
-#plt.legend(loc="lower right")
+plt.xticks(XTICK_FLOATS_SHORT, XTICK_LABELS_SHORT)
+plt.legend(loc="lower left")
 plt.savefig(PLOT_DIR + "time_vs_ti44_sigma_zoom.png", dpi=150)
 plt.close()
 
@@ -546,13 +557,14 @@ for r in range(4):
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1e0, 1e5)
-plt.legend(loc="lower left")
+plt.legend(loc="lower right")
 #plt.title("${}^{56}$Ni Abundances of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
 plt.ylabel("${}^{56}$Ni Mass Fraction")
 plt.savefig(PLOT_DIR + "time_vs_ni56_sigma.png", dpi=150)
 plt.xlim(1e0, 10.)
-#plt.legend(loc="lower right")
+plt.xticks(XTICK_FLOATS_SHORT, XTICK_LABELS_SHORT)
+plt.legend(loc="lower left")
 plt.savefig(PLOT_DIR + "time_vs_ni56_sigma_zoom.png", dpi=150)
 plt.close()
 
@@ -706,17 +718,17 @@ for r in range(4):
 	plt.figure()
 	for i in xrange(n_id):
 		if region[i] == tag:
-			plt.plot(time, rvel[i], color=col, alpha=0.05)
+			plt.plot(time, rvel[i]/1e8, color=col, alpha=0.05)
 	#plt.plot(time, dens_exp(time, *exp_best), "k--", label="Exponential")
 	#plt.plot(time, dens_pow(time, *pow_best), "k:", label="Power Law")
 	#plt.plot(time, dens_pow2(time, *pow2_best), "k-.", label="Power Law 2")
 	plt.xscale("log")
-	plt.yscale("log")
+	#plt.yscale("log")
 	plt.xlim(1e0, 1e5)
 	#plt.legend()
 	#plt.title("Velocities of %s Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
-	plt.ylabel("Radial Velocity (cm/s)")
+	plt.ylabel("Radial Velocity (10$^3$ km/s)")
 	plotfile = PLOT_DIR + "time_vs_rvel_%s.png" % (plab)
 	plt.savefig(plotfile, dpi=150)
 	plt.close()
