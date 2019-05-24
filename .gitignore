@@ -36,6 +36,7 @@ evolution_plots/casA_regions/ti44_fetched.dat
 evolution_plots/casA_regions/ni56_fetched.dat
 evolution_plots/casA_regions/images/
 evolution_plots/casA_regions/mean_traj/
+evolution_plots/casA_regions/region_total_yields/
 
 # Reproduceable files for shock breakout data fetching
 shock_breakout/sdf_list
