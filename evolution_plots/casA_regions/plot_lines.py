@@ -5,7 +5,7 @@
 # Create cleaner plots showing the mean and spread of the trajectories
 # Create plots showing best-fit Magkotsios trajectories for each region
 
-# Last modified 4/30/19 by Greg Vance
+# Last modified 6/24/19 by Greg Vance
 
 # Run the various import statements, which can sometimes take a while
 print "starting imports"
@@ -150,7 +150,7 @@ plt.yscale("log")
 plt.legend()
 #plt.title("Densities of 4 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
-plt.ylabel("Density (g/cm$^3$)")
+plt.ylabel("Density (g cm$^{-3}$)")
 plt.savefig(PLOT_DIR + "iter_vs_dens_lines.png", dpi=150)
 plt.close()
 
@@ -192,7 +192,7 @@ for i in xrange(n_id):
 plt.legend()
 #plt.title("Velocities of 4 Regions of Particles vs. Iteration")
 plt.xlabel("SNSPH Iteration")
-plt.ylabel("Radial Velocity (10$^3$ km/s)")
+plt.ylabel("Radial Velocity (10$^3$ km s$^{-1}$)")
 plt.savefig(PLOT_DIR + "iter_vs_rvel_lines.png", dpi=150)
 plt.close()
 
@@ -260,7 +260,7 @@ plt.yscale("log")
 plt.legend()
 #plt.title("Densities of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Density (g/cm$^3$)")
+plt.ylabel("Density (g cm$^{-3}$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_lines.png", dpi=150)
 plt.close()
 
@@ -305,7 +305,7 @@ plt.xlim(1e0, 1e5)
 plt.legend()
 #plt.title("Velocities of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Radial Velocity (10$^3$ km/s)")
+plt.ylabel("Radial Velocity (10$^3$ km s$^{-1}$)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_lines.png", dpi=150)
 plt.close()
 
@@ -453,7 +453,7 @@ plt.yscale("log")
 plt.legend()
 #plt.title("Densities of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Density (g/cm$^3$)")
+plt.ylabel("Density (g cm$^{-3}$)")
 plt.savefig(PLOT_DIR + "time_vs_dens_sigma.png", dpi=150)
 #plt.xlim(3e-2, 10.)
 plt.xlim(0., 10.)
@@ -508,7 +508,7 @@ plt.xlim(1e0, 1e5)
 plt.legend()
 #plt.title("Velocities of 4 Regions of Particles vs. Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Radial Velocity (10$^3$ km/s)")
+plt.ylabel("Radial Velocity (10$^3$ km s$^{-1}$)")
 plt.savefig(PLOT_DIR + "time_vs_rvel_sigma.png", dpi=150)
 plt.xlim(1e0, 10.)
 plt.xticks(XTICK_FLOATS_SHORT, XTICK_LABELS_SHORT)
@@ -670,7 +670,7 @@ for r in range(4):
 	plt.legend(loc="lower left", fontsize=9)#, title="$\\rho_0$ = %.2e g/cc" % (pow_best))
 	#plt.title("Densities of %s Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
-	plt.ylabel("Density (g/cm$^3$)")
+	plt.ylabel("Density (g cm$^{-3}$)")
 	plotfile = PLOT_DIR + "time_vs_dens_%s.png" % (plab)
 	plt.savefig(plotfile, dpi=150)
 	plt.close()
@@ -728,7 +728,7 @@ for r in range(4):
 	#plt.legend()
 	#plt.title("Velocities of %s Particles vs. Time" % (lab))
 	plt.xlabel("Time (s)")
-	plt.ylabel("Radial Velocity (10$^3$ km/s)")
+	plt.ylabel("Radial Velocity (10$^3$ km s$^{-1}$)")
 	plotfile = PLOT_DIR + "time_vs_rvel_%s.png" % (plab)
 	plt.savefig(plotfile, dpi=150)
 	plt.close()
