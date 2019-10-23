@@ -44,3 +44,10 @@ shock_breakout/get_sdf_data
 shock_breakout/data_from_sdfs/
 shock_breakout/radial_profiles/
 
+# Output files from the Schulte & Bose analyses
+schulte_and_bose/jet3b_50Am_time_sync/jet3b_sdf_1800.dat
+schulte_and_bose/jet3b_50Am_temp_histories/50Am_histories_12C13C.dat
+schulte_and_bose/jet3b_50Am_temp_histories/jet3b_histories_12C13C.dat
+
+
+sdf_vis/

@@ -1,0 +1,11 @@
+10/22/2019
+This directory was created
+The jet3b sim has a final tpos of ~26,000 hrs
+The 50Am sim has a final tpos of ~43 hrs
+Jack Schulte and Maitrayee Bose sent emails in October 2019
+They would like to have both of these at the same point in time
+I need to extract the xyz etc data from jet3b at ~43 hrs
+Which timestep file from jet3b is the closest one to that?
+Then I can extract all the physics data from that file
+Finally, save that data to an ascii file I can send it to Jack
+
