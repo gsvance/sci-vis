@@ -1,0 +1,15 @@
+Files here were copied 12/1/19 from /scratch/pyoung3/gregsnsph.dir/runsnsph/
+I took only the six files with the prefix 'c16r4' that Patrick indicated
+These are stripped starting models--I should be able to get T and rho profiles
+Profiles can be compared to the stripped 16 Msol model that went into cco2
+Doing this is important for responding to point 2) of the 1st referee report
+This is the referee report for the Cas A paper
+
+The file c16r4-inputmodel.dat has five columns all in SNSPH code units
+Columns are radius, density, internal energy u, pressure, and velocity
+
+The inputh models have the smoothing lengths, not physical parameters
+For this reason, I should not use any of them for the Cas A response
+
+The internal energy u has units of [energy] / [mass]
+
