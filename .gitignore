@@ -48,6 +48,10 @@ shock_breakout/radial_profiles/
 schulte_and_bose/jet3b_50Am_time_sync/jet3b_sdf_1800.dat
 schulte_and_bose/jet3b_50Am_temp_histories/50Am_histories_12C13C.dat
 schulte_and_bose/jet3b_50Am_temp_histories/jet3b_histories_12C13C.dat
+schulte_and_bose/all_sims_thermo_histories/50Am_rho.dat
+schulte_and_bose/all_sims_thermo_histories/50Am_temp.dat
+schulte_and_bose/all_sims_thermo_histories/jet3b_rho.dat
+schulte_and_bose/all_sims_thermo_histories/jet3b_temp.dat
 
 # Data files and output plots from the stipped models analysis
 stripped_models/c16r4-inputmodel.dat
